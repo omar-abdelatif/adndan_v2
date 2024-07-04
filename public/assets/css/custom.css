@@ -1,0 +1,231 @@
+@import url('https://fonts.googleapis.com/css2?family=Gulzar&display=swap');
+.text-right{
+    text-align: right !important;
+}
+.login-card .login-main .theme-form .or:before{
+    display: none;
+}
+[dir=rtl] .remember{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.login-card .login-main .theme-form .link{
+    position: relative;
+    top: 0;
+}
+[dir=rtl] .checkbox .text-muted{
+    order: 1;
+}
+.login-main h4{
+    margin-bottom: 30px;
+}
+.page-wrapper.compact-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li:first-child
+{
+    display: block !important;
+}
+.page-wrapper.compact-wrapper .page-body-wrapper .according-menu{
+    display: none !important;
+}
+.dataTables_wrapper table.dataTable
+{
+    border: none;
+}
+.dataTables_wrapper .dataTables_paginate
+{
+    border: none;
+}
+body.dark-only .toast-success
+{
+    background-color: rgb(3, 83, 3);
+}
+.toast-message{
+    color: white;
+}
+table.dataTable.display tbody tr.odd > .sorting_1
+{
+    background-color: transparent;
+}
+table.dataTable.display tbody tr.odd
+{
+    background-color: rgb(78, 78, 78);
+}
+.dataTables_wrapper .dataTables_filter input[type=search]
+{
+    color: white;
+}
+.page-wrapper .page-body-wrapper .page-body
+{
+    padding: 0;
+}
+.logo-wrapper a h3{
+    font-family: 'Gulzar', serif;
+    color: #7366ff;
+}
+.page-wrapper .page-body-wrapper .page-title .row
+{
+    align-items: flex-start;
+}
+.fade {
+    transition: opacity 0.15s linear;
+}
+.hidden {
+    display: none !important;
+}
+.form-control
+{
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+table.dataTable input[type='checkbox']{
+    height: 15px;
+}
+body.dark-only .login-dark {
+    background-color: #262932;
+    background-blend-mode: overlay;
+}
+body.dark-only .login-dark .login-main {
+    background-color: #323846;
+}
+body.dark-only .page-wrapper .page-body-wrapper div.sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li a.active span{
+    color: #7366ff !important;
+}
+/* ! Stepper ! */
+.basic-wizard .stepper-horizontal {
+    display: flex;
+    width: 100%;
+    margin: 0 auto;
+    overflow: auto;
+    margin-bottom: 24px;
+}
+.basic-wizard .stepper-horizontal .step {
+    position: relative;
+    padding-inline: 24px;
+    z-index: 2;
+    width: 100%;
+}
+.basic-wizard .stepper-horizontal .step:first-child {
+    padding-left: 0;
+}
+.basic-wizard .stepper-horizontal .step:last-child {
+    padding-right: 0;
+}
+.basic-wizard .stepper-horizontal .step:last-child .step-bar-left,
+.basic-wizard .stepper-horizontal .step:last-child .step-bar-right {
+    display: none;
+}
+.basic-wizard .stepper-horizontal .step .step-circle {
+    width: 32px;
+    height: 32px;
+    margin: 0 auto;
+    border-radius: 50%;
+    text-align: center;
+    line-height: 28px;
+    font-size: 16px;
+    font-weight: 600;
+    z-index: 2;
+    border: 2px solid #cccccc;
+    background: var(--white);
+}
+.basic-wizard .stepper-horizontal .step.done .step-circle {
+    background-color: var(--white);
+    border: 2px solid #52526c;
+    color: #7366FF;
+    z-index: 4;
+    position: relative;
+}
+.basic-wizard .stepper-horizontal .step.done .step-circle:before {
+    font-family: "FontAwesome";
+    font-weight: 100;
+    content: "\f00c";
+}
+.basic-wizard .stepper-horizontal .step.done .step-circle * {
+  display: none;
+}
+.basic-wizard .stepper-horizontal .step.done .step-title {
+  color: #52526c;
+}
+.basic-wizard .stepper-horizontal .step.editing .step-circle {
+    background: var(--white);
+    border-color: #52526c;
+    color: var(--theme-deafult);
+}
+.basic-wizard .stepper-horizontal .step .step-title {
+    margin-top: 8px;
+    font-size: 16px;
+    font-weight: 600;
+    white-space: nowrap;
+    color: var(--chart-text-color);
+}
+.basic-wizard .stepper-horizontal .step .step-title,
+.basic-wizard .stepper-horizontal .step .step-optional {
+  text-align: center;
+}
+.basic-wizard .stepper-horizontal .step .step-bar-left,
+.basic-wizard .stepper-horizontal .step .step-bar-right {
+    position: absolute;
+    top: 14px;
+    height: 4px;
+    background-color: var(--view-border-marker);
+    border: solid var(--view-border-marker);
+    border-width: 2px 0;
+}
+.basic-wizard .stepper-horizontal .step .step-bar-left {
+    width: 100%;
+    left: 50%;
+    z-index: -1;
+}
+[dir=rtl] .basic-wizard .stepper-horizontal .step .step-bar-left {
+    left: unset;
+    right: 50%;
+    margin-left: unset;
+    margin-right: 1rem;
+}
+.basic-wizard .stepper-horizontal .step .step-bar-right {
+    width: 0;
+    left: 50%;
+    z-index: -1;
+    transition: width 500ms ease-in-out;
+}
+[dir=rtl] .basic-wizard .stepper-horizontal .step .step-bar-right {
+    right: 50%;
+    left: unset;
+}
+.basic-wizard .stepper-horizontal .step.done .step-bar-right {
+    background-color: var(--theme-deafult);
+    border-color: var(--theme-deafult);
+    z-index: 3;
+    width: 100%;
+}
+html[dir=rtl] .checkbox_animated, html[dir=rtl] .radio_animated{
+    margin: 0;
+}
+.dropdown-menu{
+    min-width: max-content;
+}
+.nav-link {
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out;
+}
+.modal.fade .modal-dialog {
+    transition: transform 0.3s ease-out;
+}
+.light table.dataTable.display tbody tr.odd td {
+    color: #fff;
+}
+.error {
+	border: 3px solid rgb(194, 23, 23) !important;
+    margin: 0;
+}
+#ssnMsg, #mobileMsg, #nameMsg, #birthdateMsg, #ssnMsgRequired, #mobileMsgRequired, #birthdateMsgRequired, #nameMsgRequired{
+    font-size: 16px;
+    color: rgb(223, 56, 56);
+}
+.good {
+	border: 3px solid rgb(23, 194, 23) !important;
+}
+html[dir=rtl] .page-wrapper.compact-wrapper .page-body-wrapper .sidebar-wrapper .sidebar-main .sidebar-links .simplebar-wrapper .simplebar-mask .simplebar-content-wrapper .simplebar-content > li a i{
+    margin-left: 15px;
+}
+.dropdown-menu.show {
+    display: inline-flex;
+    flex-direction: column;
+}
