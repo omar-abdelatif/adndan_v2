@@ -27,6 +27,7 @@ Route::prefix('admin/dashboard')->group(function () {
         Route::prefix('cases')->group(function(){
             Route::controller(CasesController::class)->group(function(){
                 Route::get('all', 'index')->name('cases.index');
+                Route::post('store', 'store')->name('cases.store');
             });
         });
     });

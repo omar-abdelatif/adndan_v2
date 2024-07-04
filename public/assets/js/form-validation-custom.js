@@ -1,8 +1,4 @@
-let f1 = 0;
-let f2 = 0;
-let f3 = 0;
-let f4 = 0;
-// ! Validation Function Stamp
+//! Validation Form Function
 function validateForm(form) {
     let isValid = true;
     let inputs = form.querySelectorAll(
@@ -26,8 +22,17 @@ function validateForm(form) {
         if (
             select.value === "التصنيف" ||
             select.value === "المنطقة" ||
-            select.value === "الحرفة" ||
-            select.value === "السنة"
+            select.value === "نوع المتبرع" ||
+            select.value === "نوع التبرع النقدي" ||
+            select.value === "نوع التبرع" ||
+            select.value === "قوة المقبرة (بالغرف)" ||
+            select.value === "نوع المقبرة" ||
+            select.value === "المقبرة" ||
+            select.value === "الغرفة" ||
+            select.value === "جنس المتوفي" ||
+            select.value === "حجم المتوفي" ||
+            select.value === "سن المتوفي" ||
+            select.value === "تخصص المقبره"
         ) {
             select.classList.add("error");
             select.classList.remove("good");
@@ -48,6 +53,18 @@ function validateForm(form) {
             isValid = false;
         }
     });
+    const InputDates = form.querySelectorAll('input[type="date"][required]');
+    InputDates.forEach((date) => {
+        let dateErrorMsg = date.nextElementSibling;
+        if (date.value === "") {
+            date.classList.add("error");
+            dateErrorMsg.classList.remove("d-none");
+            isValid = false;
+        } else {
+            date.classList.remove("error");
+            dateErrorMsg.classList.add("d-none");
+        }
+    });
     const textareas = form.querySelectorAll("textarea[required]");
     textareas.forEach(function (text) {
         let textareaErrorMsg = text.nextElementSibling;
@@ -63,6 +80,7 @@ function validateForm(form) {
     });
     return isValid;
 }
+//! Validation Image Function
 function validateImage(img, imgReq, imgExt, invoice_img, imgSizeMsg) {
     const allowedExtensions = [
         "image/jpeg",
@@ -105,81 +123,79 @@ function validateImage(img, imgReq, imgExt, invoice_img, imgSizeMsg) {
         imgSizeMsg.classList.add("d-none");
     }
 }
-//! Store Subscriber Form
-const storeSub = document.getElementById("storeSubscriber");
-if (storeSub) {
-    function nextStepFunction() {
-        if (validateForm(storeSub)) {
-            nextStep();
-        }
+//! Validation Files Function
+function validateFile(file, fileReq, fileExt, fileMsg, pdfs) {
+    const allowedExtensions = ["application/pdf"];
+    fileReq.classList.add("d-none");
+    fileExt.classList.add("d-none");
+    fileMsg.classList.add("d-none");
+    if (!file) {
+        pdfs.classList.remove("good");
+        pdfs.classList.add("error");
+        fileReq.classList.remove("d-none");
+        return false;
+    } else {
+        pdfs.classList.add("good");
+        pdfs.classList.remove("error");
+        fileReq.classList.add("d-none");
     }
-    function backStepFunction() {
-        backStep();
+    if (!allowedExtensions.includes(file.type)) {
+        pdfs.classList.add("error");
+        pdfs.classList.remove("good");
+        fileExt.classList.remove("d-none");
+        return false;
+    } else {
+        pdfs.classList.remove("error");
+        pdfs.classList.add("good");
+        fileExt.classList.add("d-none");
     }
-    //! Validation Subscriber Name
-    const nameSub = document.getElementById("name");
-    const nameSubMsg = document.getElementById("nameMsg");
-    const nameReq = document.getElementById("nameMsgRequired");
-    nameSub.addEventListener("input", function () {
+    const sizeLimit = 2048;
+    if (file.size / 1024 <= sizeLimit) {
+        pdfs.classList.add("error");
+        pdfs.classList.remove("good");
+        fileMsg.classList.remove("d-none");
+        return false;
+    } else {
+        pdfs.classList.remove("error");
+        pdfs.classList.add("good");
+        fileMsg.classList.add("d-none");
+    }
+    return true;
+}
+//! Cases Creation Form
+let CaseTable = document.getElementById("CaseTable");
+if (CaseTable) {
+    //! Full Name Validation
+    const CaseFullName = document.getElementById("CaseFullName");
+    const CaseReq = document.getElementById("CaseReq");
+    const CaseSubMsg = document.getElementById("CaseMsg");
+    CaseFullName.addEventListener("input", function () {
         let letters = /^[\u0600-\u06FF\s]{3,}$/;
         if (this.value.trim() === "") {
-            nameReq.classList.remove("d-none");
-            nameSubMsg.classList.add("d-none");
-            nameSub.classList.remove("good");
-            nameSub.classList.add("error");
+            CaseReq.classList.remove("d-none");
+            CaseSubMsg.classList.add("d-none");
+            CaseFullName.classList.remove("good");
+            CaseFullName.classList.add("error");
         } else {
             if (letters.test(this.value)) {
-                nameSub.classList.add("good");
-                nameSub.classList.remove("error");
-                nameSubMsg.classList.add("d-none");
-                nameReq.classList.add("d-none");
-                f3 = 1;
-                if (f1 === 1 && f2 === 1 && f3 === 1 && f4 === 1) {
-                    document.getElementById("nextbtn").disabled = false;
-                } else {
-                    document.getElementById("nextbtn").disabled = true;
-                }
+                CaseFullName.classList.add("good");
+                CaseFullName.classList.remove("error");
+                CaseSubMsg.classList.add("d-none");
+                CaseReq.classList.add("d-none");
             } else {
-                nameSub.classList.remove("good");
-                nameSub.classList.add("error");
-                nameSubMsg.classList.remove("d-none");
-                nameReq.classList.add("d-none");
-                f3 = 0;
-                document.getElementById("nextbtn").disabled = true;
-            }
-        }
-    });
-    //! Validation Subscriber NICKNAME
-    const nickname = document.getElementById("nickname");
-    const nicknameReq = document.getElementById("nickReq");
-    const nicknameMsg = document.getElementById("nickMsg");
-    nickname.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s]{5,}$/;
-        if (this.value.trim() === "") {
-            nicknameReq.classList.remove("d-none");
-            nicknameMsg.classList.add("d-none");
-            nickname.classList.remove("good");
-            nickname.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                nickname.classList.add("good");
-                nickname.classList.remove("error");
-                nicknameMsg.classList.add("d-none");
-                nicknameReq.classList.add("d-none");
-            } else {
-                nickname.classList.remove("good");
-                nickname.classList.add("error");
-                nicknameMsg.classList.remove("d-none");
-                nicknameReq.classList.add("d-none");
+                CaseFullName.classList.remove("good");
+                CaseFullName.classList.add("error");
+                CaseSubMsg.classList.remove("d-none");
+                CaseReq.classList.add("d-none");
             }
         }
     });
     //! Validation Subscriber SSN
     const ssn = document.getElementById("ssn");
     const ssnMsg = document.getElementById("ssnMsg");
-    const ssnReq = document.getElementById("ssnMsgRequired");
+    const ssnReq = document.getElementById("ssnReq");
     ssn.addEventListener("input", function () {
-        let letters = /(?=.{14,})/;
+        let letters = /^[0-9]{14}/;
         if (this.value.trim() === "") {
             ssnReq.classList.remove("d-none");
             ssnMsg.classList.add("d-none");
@@ -209,67 +225,60 @@ if (storeSub) {
     });
     //! Validation Subscriber Mobile
     const mobile = document.getElementById("mobile_no");
-    const mobileMsg = document.getElementById("mobileMsg");
-    const mobReq = document.getElementById("mobileMsgRequired");
+    const mobReq = document.getElementById("mobileReq");
+    const mobMsg = document.getElementById("mobileMsg");
     mobile.addEventListener("input", function () {
-        let letters = /(?=.{11,})/;
+        let letters = /^[0-9]{11}/;
         if (mobile.value.trim() === "") {
             mobReq.classList.remove("d-none");
-            mobileMsg.classList.add("d-none");
+            mobMsg.classList.add("d-none");
             mobile.classList.remove("good");
             mobile.classList.add("error");
         } else {
             if (letters.test(mobile.value)) {
                 mobile.classList.add("good");
                 mobile.classList.remove("error");
-                mobileMsg.classList.add("d-none");
+                mobMsg.classList.add("d-none");
                 mobReq.classList.add("d-none");
-                f2 = 1;
-                if (f1 === 1 && f2 === 1 && f3 === 1 && f4 === 1) {
-                    document.getElementById("nextbtn").disabled = false;
-                } else {
-                    document.getElementById("nextbtn").disabled = true;
-                }
             } else {
                 mobile.classList.remove("good");
                 mobile.classList.add("error");
-                mobileMsg.classList.remove("d-none");
+                mobMsg.classList.remove("d-none");
                 mobReq.classList.add("d-none");
-                f2 = 0;
-                document.getElementById("nextbtn").disabled = true;
             }
         }
     });
-    //! Validation Subscriber Birthdate
-    const birthday = document.getElementById("birthdate");
-    const birthdayMsg = document.getElementById("birthdateMsg");
-    const birthReq = document.getElementById("birthdateMsgRequired");
-    birthday.addEventListener("blur", function () {
-        if (this.value.trim() === "") {
-            birthReq.classList.remove("d-none");
-            birthdayMsg.classList.add("d-none");
-            birthday.classList.remove("good");
-            birthday.classList.add("error");
-            document.getElementById("nextbtn").disabled = true;
+    //! Validation For Age
+    const age = document.getElementById("age");
+    const ageReq = document.getElementById("ageReq");
+    const ageMsg = document.getElementById("ageMsg");
+    age.addEventListener("input", function () {
+        let letters = /^\d{2}$/;
+        if (age.value.trim() === "") {
+            ageReq.classList.remove("d-none");
+            ageMsg.classList.add("d-none");
+            age.classList.remove("good");
+            age.classList.add("error");
         } else {
-            birthday.classList.remove("error");
-            birthdayMsg.classList.add("d-none");
-            birthReq.classList.add("d-none");
-            birthday.classList.add("good");
-            f4 = 1;
-            if (f1 === 1 && f2 === 1 && f3 === 1 && f4 === 1) {
-                document.getElementById("nextbtn").disabled = false;
+            if (letters.test(age.value)) {
+                age.classList.add("good");
+                age.classList.remove("error");
+                ageMsg.classList.add("d-none");
+                ageReq.classList.add("d-none");
             } else {
-                document.getElementById("nextbtn").disabled = true;
+                age.classList.remove("good");
+                age.classList.add("error");
+                ageMsg.classList.remove("d-none");
+                ageReq.classList.add("d-none");
             }
         }
     });
-    //! Validation on Subscriber Address
+    //! Validation For Address
     const address = document.getElementById("address");
     const addressReq = document.getElementById("addressReq");
     const addressMsg = document.getElementById("addressMsg");
     address.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s]+$/;
+        let letters = /^[\u0600-\u06FF\s]{3,}$/;
         if (this.value.trim() === "") {
             addressReq.classList.remove("d-none");
             addressMsg.classList.add("d-none");
@@ -289,844 +298,404 @@ if (storeSub) {
             }
         }
     });
-    //! Validation on Subscriber Avatar Image
-    const AvatarImg = document.getElementById("personalImg");
-    const SubimgReq = document.getElementById("personalimgReq");
-    const SubimgSize = document.getElementById("personalimgSize");
-    const SubimgExt = document.getElementById("personalimgExt");
-    AvatarImg.addEventListener("change", function () {
-        const img = AvatarImg.files[0];
+    //! Validation For Files Upload
+    const Files = document.getElementById("files");
+    const FilesReq = document.getElementById("filesReq");
+    const FilesSize = document.getElementById("filesSize");
+    const FilesExt = document.getElementById("filesExt");
+    Files.addEventListener("change", function () {
+        const img = Files.files[0];
         if (img) {
-            validateImage(img, SubimgReq, SubimgExt, AvatarImg, SubimgSize);
+            validateImage(img, FilesReq, FilesExt, Files, FilesSize);
         } else {
-            AvatarImg.classList.add("error");
-            AvatarImg.classList.remove("good");
-            SubimgReq.classList.remove("d-none");
-            SubimgSize.classList.add("d-none");
-            SubimgExt.classList.add("d-none");
+            Files.classList.add("error");
+            Files.classList.remove("good");
+            FilesReq.classList.remove("d-none");
+            FilesSize.classList.add("d-none");
+            FilesExt.classList.add("d-none");
         }
     });
-    //! Validation on Subscriber Id Image
-    const IdImg = document.getElementById("idImg");
-    const IdimgReq = document.getElementById("idimgReq");
-    const IdimgSize = document.getElementById("idimgSize");
-    const IdimgExt = document.getElementById("idimgExt");
-    IdImg.addEventListener("change", function () {
-        const img = IdImg.files[0];
-        if (img) {
-            validateImage(img, IdimgReq, IdimgExt, IdImg, IdimgSize);
-        } else {
-            IdImg.classList.add("error");
-            IdImg.classList.remove("good");
-            IdimgReq.classList.remove("d-none");
-            IdimgSize.classList.add("d-none");
-            IdimgExt.classList.add("d-none");
-        }
-    });
-    //! Validation on Submit Button
-    const subSubmit = document.getElementById("submitButton");
-    subSubmit.addEventListener("click", function (e) {
+    //! Submit Case Form
+    const CaseFormSubmit = document.getElementById("CaseForm");
+    CaseFormSubmit.addEventListener("click", function (e) {
         e.preventDefault();
-        if (validateForm(storeSub)) {
-            storeSub.submit();
+        if (validateForm(CaseTable)) {
+            CaseTable.submit();
         }
     });
 }
-//! Validation Store News
-const newsform = document.getElementById("newsForm");
-if (newsform) {
-    //! Validation For Input News Title
-    const newsMsg = document.getElementById("newsMsg");
-    const title = document.getElementById("newsTitle");
-    const newsReq = document.getElementById("newsReq");
-    title.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{7,}$/;
-        if (this.value.trim() === "") {
-            newsReq.classList.remove("d-none");
-            newsMsg.classList.add("d-none");
-            title.classList.remove("good");
-            title.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                title.classList.add("good");
-                title.classList.remove("error");
-                newsMsg.classList.add("d-none");
-                newsReq.classList.add("d-none");
-            } else {
-                title.classList.remove("good");
-                title.classList.add("error");
-                newsMsg.classList.remove("d-none");
-                newsReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Input News TextArea
-    const details = document.getElementById("details");
-    const newsDetailsReq = document.getElementById("detailsReq");
-    details.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{7,}$/;
-        if (this.value.trim() === "") {
-            newsDetailsReq.classList.remove("d-none");
-            details.classList.remove("good");
-            details.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                details.classList.add("good");
-                newsDetailsReq.classList.add("d-none");
-            } else {
-                details.classList.remove("good");
-                details.classList.add("error");
-                newsDetailsReq.classList.remove("d-none");
-            }
-        }
-    });
-    //! Validation For Category Select
-    const categorySelect = document.getElementById("categorySelect");
-    const categoryMsg = document.getElementById("categoryMsg");
-    categorySelect.addEventListener("change", function () {
-        if (this.options[this.selectedIndex].value === "التصنيف") {
-            categorySelect.classList.add("error");
-            categoryMsg.classList.remove("d-none");
-            categorySelect.classList.remove("good");
-        } else {
-            categorySelect.classList.remove("error");
-            categorySelect.classList.add("good");
-            categoryMsg.classList.add("d-none");
-        }
-    });
-    //! Validation For News Image
-    const newsImg = document.getElementById("newsImg");
-    const NewsimgReq = document.getElementById("imgReq");
-    const NewsimgSize = document.getElementById("imgSize");
-    const NewsimgExt = document.getElementById("imgExt");
-    newsImg.addEventListener("change", function () {
-        const img = newsImg.files[0];
-        if (img) {
-            validateImage(img, NewsimgReq, NewsimgExt, newsImg, NewsimgSize);
-        } else {
-            newsImg.classList.add("error");
-            newsImg.classList.remove("good");
-            NewsimgReq.classList.remove("d-none");
-            NewsimgSize.classList.add("d-none");
-            NewsimgExt.classList.add("d-none");
-        }
-    });
-    //! Validation ON Submit
-    const submit = document.getElementById("newsSubmit");
-    submit.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (validateForm(newsform)) {
-            newsform.submit();
-        }
-    });
-}
-//! Validation For Store Cost Years
-const costYears = document.getElementById("costYears");
-if (costYears) {
-    //! Validation For Year Cost
-    const year = document.getElementById("year");
-    const yearMsg = document.getElementById("yearMsg");
-    const yearReq = document.getElementById("yearReq");
-    year.addEventListener("input", function () {
-        let letters = /^\d{4}$/;
-        if (this.value.trim() === "") {
-            yearReq.classList.remove("d-none");
-            yearMsg.classList.add("d-none");
-            year.classList.remove("good");
-            year.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                year.classList.add("good");
-                year.classList.remove("error");
-                yearMsg.classList.add("d-none");
-                yearReq.classList.add("d-none");
-            } else {
-                year.classList.remove("good");
-                year.classList.add("error");
-                yearMsg.classList.remove("d-none");
-                yearReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Year Cost
-    const cost = document.getElementById("cost");
-    const amountMsg = document.getElementById("amountMsg");
-    const amountReq = document.getElementById("amountReq");
-    cost.addEventListener("input", function () {
-        let letters = /^(?!-)(?!0+$)\d{2,10}$/;
-        if (this.value.trim() === "") {
-            amountReq.classList.remove("d-none");
-            amountMsg.classList.add("d-none");
-            cost.classList.remove("good");
-            cost.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                cost.classList.add("good");
-                cost.classList.remove("error");
-                amountMsg.classList.add("d-none");
-                amountReq.classList.add("d-none");
-            } else {
-                cost.classList.remove("good");
-                cost.classList.add("error");
-                amountMsg.classList.remove("d-none");
-                amountReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Submit Cost
-    const submit = document.getElementById("submitCost");
-    submit.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (validateForm(costYears)) {
-            costYears.submit();
-        }
-    });
-}
-//! Validation For Store Tombs
-const tomb = document.getElementById("tombForm");
-if (tomb) {
-    //! Validation For Tomb Name
-    const tombName = document.getElementById("tombName");
-    const tombReq = document.getElementById("tombReq");
-    const tombMsg = document.getElementById("tombMsg");
-    tombName.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s\d\/\-\.\,]{3,}$/;
-        if (this.value.trim() === "") {
-            tombReq.classList.remove("d-none");
-            tombMsg.classList.add("d-none");
-            tombName.classList.remove("good");
-            tombName.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                tombName.classList.add("good");
-                tombName.classList.remove("error");
-                tombMsg.classList.add("d-none");
-                tombReq.classList.add("d-none");
-            } else {
-                tombName.classList.remove("good");
-                tombName.classList.add("error");
-                tombMsg.classList.remove("d-none");
-                tombReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Region
-    const tombRegion = document.getElementById("regionSelect");
-    const regionMsg = document.getElementById("regionMsg");
-    tombRegion.addEventListener("change", function () {
-        if (this.options[this.selectedIndex].value === "المنطقة") {
-            tombRegion.classList.add("error");
-            regionMsg.classList.remove("d-none");
-            tombRegion.classList.remove("good");
-        } else {
-            tombRegion.classList.remove("error");
-            tombRegion.classList.add("good");
-            regionMsg.classList.add("d-none");
-        }
-    });
-    //! Validation For Tomb Guard Mobile Number
-    const tombGuardMobileNumber = document.getElementById("tomb_guard_number");
-    const guardMsg = document.getElementById("guardMob");
-    tombGuardMobileNumber.addEventListener("input", function () {
-        let guardMob = /(?=.{11,})/;
-        if (this.value.trim() === "") {
-            guardMsg.classList.remove("d-none");
-            tombGuardMobileNumber.classList.remove("good");
-            tombGuardMobileNumber.classList.add("error");
-        } else {
-            if (guardMob.test(this.value)) {
-                tombGuardMobileNumber.classList.add("good");
-                tombGuardMobileNumber.classList.remove("error");
-                guardMsg.classList.add("d-none");
-            } else {
-                tombGuardMobileNumber.classList.remove("good");
-                tombGuardMobileNumber.classList.add("error");
-                guardMsg.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Location
-    const tombLocation = document.getElementById("location");
-    const locationReq = document.getElementById("locationReq");
-    tombLocation.addEventListener("input", function () {
-        let urlRegex = /^(ftp|http|https):\/\/[^ "]+$/;
-        if (this.value.trim() === "") {
-            locationReq.classList.remove("d-none");
-            tombLocation.classList.remove("good");
-            tombLocation.classList.add("error");
-        } else {
-            if (urlRegex.test(this.value)) {
-                tombLocation.classList.add("good");
-                tombLocation.classList.remove("error");
-                locationReq.classList.add("d-none");
-            } else {
-                tombLocation.classList.remove("good");
-                tombLocation.classList.add("error");
-                locationReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Submit Form
-    const submit = document.getElementById("tombSubmit");
-    submit.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (validateForm(tomb)) {
-            tomb.submit();
-        }
-    });
-}
-//! Validation For Store Workers
-const workers = document.getElementById("workers");
-if (workers) {
-    //! Validation For Worker Name
-    const workerName = document.getElementById("worker_name");
-    const nameMsg = document.getElementById("nameMsg");
-    const nameReq = document.getElementById("nameReq");
-    workerName.addEventListener("input", function () {
+//! Validation For Donators Creation
+let newDonators = document.getElementById("newDonators");
+if (newDonators) {
+    //! New Donators Name
+    const DonatorName = document.getElementById("DonatorName");
+    const DonatorReq = document.getElementById("DonatorReq");
+    const DonatorMsg = document.getElementById("DonatorMsg");
+    DonatorName.addEventListener("input", function () {
         let letters = /^[\u0600-\u06FF\s]{3,}$/;
         if (this.value.trim() === "") {
-            nameReq.classList.remove("d-none");
-            nameMsg.classList.add("d-none");
-            workerName.classList.remove("good");
-            workerName.classList.add("error");
+            DonatorReq.classList.remove("d-none");
+            DonatorMsg.classList.add("d-none");
+            DonatorName.classList.remove("good");
+            DonatorName.classList.add("error");
         } else {
             if (letters.test(this.value)) {
-                workerName.classList.add("good");
-                workerName.classList.remove("error");
-                nameMsg.classList.add("d-none");
-                nameReq.classList.add("d-none");
+                DonatorName.classList.add("good");
+                DonatorName.classList.remove("error");
+                DonatorMsg.classList.add("d-none");
+                DonatorReq.classList.add("d-none");
             } else {
-                workerName.classList.remove("good");
-                workerName.classList.add("error");
-                nameMsg.classList.remove("d-none");
-                nameReq.classList.add("d-none");
+                DonatorName.classList.remove("good");
+                DonatorName.classList.add("error");
+                DonatorMsg.classList.remove("d-none");
+                DonatorReq.classList.add("d-none");
             }
         }
     });
-    //! Validation For Worker Mobile
-    const workerMob = document.getElementById("worker_mob");
-    const mobReq = document.getElementById("mobReq");
-    const mobCount = document.getElementById("mobCount");
-    workerMob.addEventListener("input", function () {
-        const regMOB = /(?=.{11,})/;
+    //! Donators Mobile Numbers
+    const DonatorMobile = document.getElementById("DonatorMobile");
+    const donatorMobileReq = document.getElementById("donatorMobileReq");
+    const donatorMobileMsg = document.getElementById("donatorMobileMsg");
+    DonatorMobile.addEventListener("input", function () {
+        let letters = /^[0-9]{11}$/;
         if (this.value.trim() === "") {
-            mobReq.classList.remove("d-none");
-            mobCount.classList.add("d-none");
-            workerMob.classList.remove("good");
-            workerMob.classList.add("error");
+            donatorMobileReq.classList.remove("d-none");
+            donatorMobileMsg.classList.add("d-none");
+            DonatorMobile.classList.remove("good");
+            DonatorMobile.classList.add("error");
         } else {
-            if (regMOB.test(this.value)) {
-                workerMob.classList.add("good");
-                workerMob.classList.remove("error");
-                mobReq.classList.add("d-none");
-                mobCount.classList.add("d-none");
+            if (letters.test(this.value)) {
+                DonatorMobile.classList.add("good");
+                DonatorMobile.classList.remove("error");
+                donatorMobileMsg.classList.add("d-none");
+                donatorMobileReq.classList.add("d-none");
             } else {
-                workerMob.classList.remove("good");
-                workerMob.classList.add("error");
-                mobReq.classList.add("d-none");
-                mobCount.classList.remove("d-none");
+                DonatorMobile.classList.remove("good");
+                DonatorMobile.classList.add("error");
+                donatorMobileMsg.classList.remove("d-none");
+                donatorMobileReq.classList.add("d-none");
             }
         }
     });
-    //! Validation For Worker Category
-    const craft = document.getElementById("craftSelect");
-    const craftReq = document.getElementById("craftReq");
-    craft.addEventListener("change", function () {
-        if (this.options[this.selectedIndex].value === "الحرفة") {
-            craft.classList.add("error");
-            craft.classList.remove("good");
-            craftReq.classList.remove("d-none");
+    //! Duration Donation Validation
+    const DonationDuration = document.getElementById("duration");
+    const DurationReq = document.getElementById("durationReq");
+    DonationDuration.addEventListener("change", function () {
+        if (this.options[this.selectedIndex].value === "نوع المتبرع") {
+            DonationDuration.classList.add("error");
+            DonationDuration.classList.remove("good");
+            DurationReq.classList.remove("d-none");
         } else {
-            craft.classList.remove("error");
-            craft.classList.add("good");
-            craftReq.classList.add("d-none");
+            DonationDuration.classList.remove("error");
+            DonationDuration.classList.add("good");
+            DurationReq.classList.add("d-none");
         }
         if (this.options[this.selectedIndex].value === "أخرى") {
-            otherCraft.disabled = false;
-            if (otherCraft.value.trim() === "") {
-                otherReq.classList.remove("d-none");
-                otherCraft.classList.remove("good");
-                otherCraft.classList.add("error");
+            otherDuration.disabled = false;
+            if (otherDuration.value.trim() === "") {
+                otherDurationReq.classList.remove("d-none");
+                otherDuration.classList.remove("good");
+                otherDuration.classList.add("error");
             }
         } else {
-            otherCraft.disabled = true;
-            otherCraft.classList.remove("good");
-            otherCraft.classList.remove("error");
-            otherReq.classList.add("d-none");
+            otherDuration.disabled = true;
+            otherDuration.classList.remove("good");
+            otherDuration.classList.remove("error");
+            otherDurationReq.classList.add("d-none");
         }
     });
-    //! Validation For Worker Other Category
-    const otherCraft = document.getElementById("otherCategory");
-    const otherReq = document.getElementById("otherReq");
-    otherCraft.addEventListener("input", function () {
+    //! Other Duration Validation
+    const otherDuration = document.getElementById("otherDuration");
+    const otherDurationReq = document.getElementById("otherReq");
+    const otherDurationMsg = document.getElementById("otherMsg");
+    otherDuration.addEventListener("input", function () {
         let letters = /^[\u0600-\u06FF\s]{3,}$/;
         if (this.value.trim() === "") {
-            otherReq.classList.remove("d-none");
-            otherMsg.classList.remove("d-none");
-            otherCraft.classList.remove("good");
-            otherCraft.classList.add("error");
+            otherDurationReq.classList.remove("d-none");
+            otherDurationMsg.classList.remove("d-none");
+            otherDuration.classList.remove("good");
+            otherDuration.classList.add("error");
         } else {
             if (letters.test(this.value)) {
-                otherCraft.classList.add("good");
-                otherCraft.classList.remove("error");
-                otherReq.classList.add("d-none");
-                otherMsg.classList.add("d-none");
+                otherDuration.classList.add("good");
+                otherDuration.classList.remove("error");
+                otherDurationReq.classList.add("d-none");
+                otherDurationMsg.classList.add("d-none");
             } else {
-                otherCraft.classList.remove("good");
-                otherCraft.classList.add("error");
-                otherReq.classList.add("d-none");
-                otherMsg.classList.remove("d-none");
+                otherDuration.classList.remove("good");
+                otherDuration.classList.add("error");
+                otherDurationReq.classList.add("d-none");
+                otherDurationMsg.classList.remove("d-none");
             }
         }
     });
-    //! Validation For Worker Location
-    const worker_loc = document.getElementById("worker_location");
-    const locReq = document.getElementById("locReq");
-    const locMsg = document.getElementById("locMsg");
-    worker_loc.addEventListener("input", function () {
-        const regLOC = /^[\u0600-\u06FF\s]{5,}$/;
-        if (this.value.trim() === "") {
-            locReq.classList.remove("d-none");
-            locMsg.classList.add("d-none");
-            worker_loc.classList.remove("good");
-            worker_loc.classList.add("error");
-        } else {
-            if (regLOC.test(this.value)) {
-                worker_loc.classList.add("good");
-                worker_loc.classList.remove("error");
-                locMsg.classList.add("d-none");
-                locReq.classList.add("d-none");
-            } else {
-                worker_loc.classList.remove("good");
-                worker_loc.classList.add("error");
-                locMsg.classList.remove("d-none");
-                locReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Submit Form
-    const submit = document.getElementById("workerSubmit");
-    submit.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (validateForm(workers)) {
-            workers.submit();
+    //! Submit Case Form
+    const DonatorsSubmitForm = document.getElementById("DonatorsSubmit");
+    DonatorsSubmitForm.addEventListener("click", function (e) {
+        e.preventDefault();
+        if (validateForm(newDonators)) {
+            newDonators.submit();
         }
     });
 }
-//! Validation For Store Associations Committes
-const associate = document.getElementById("associateForm");
-if (associate) {
-    //! Validation For Association Name
-    const associateName = document.getElementById("associateName");
-    const associateNameReq = document.getElementById("associateNameReq");
-    const associateNameMsg = document.getElementById("associateNameMsg");
-    associateName.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s]{10,}$/;
-        if (this.value.trim() === "") {
-            associateNameReq.classList.remove("d-none");
-            associateNameMsg.classList.add("d-none");
-            associateName.classList.remove("good");
-            associateName.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                associateName.classList.add("good");
-                associateName.classList.remove("error");
-                associateNameMsg.classList.add("d-none");
-                associateNameReq.classList.add("d-none");
-            } else {
-                associateName.classList.remove("good");
-                associateName.classList.add("error");
-                associateNameMsg.classList.remove("d-none");
-                associateNameReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Association Boss
-    const associateBoss = document.getElementById("associateBoss");
-    const bossMsg = document.getElementById("bossMsg");
-    const bossReq = document.getElementById("bossReq");
-    associateBoss.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s]{3,}$/;
-        if (this.value.trim() === "") {
-            bossReq.classList.remove("d-none");
-            bossMsg.classList.add("d-none");
-            associateBoss.classList.remove("good");
-            associateBoss.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                associateBoss.classList.add("good");
-                associateBoss.classList.remove("error");
-                bossMsg.classList.add("d-none");
-                bossReq.classList.add("d-none");
-            } else {
-                associateBoss.classList.remove("good");
-                associateBoss.classList.add("error");
-                bossMsg.classList.remove("d-none");
-                bossReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Submit Form
-    const submit = document.getElementById("associateSubmit");
-    submit.addEventListener("click", function (event) {
-        event.preventDefault();
-        if (validateForm(associate)) {
-            associate.submit();
-        }
-    });
-}
-//! Validation For Store Miscellaneous
-const miscForm = document.getElementById("miscForm");
-if (miscForm) {
-    //! Validation Select Category And Other Category
-    const categorySelect = document.getElementById("category");
-    const catReq = document.getElementById("catReq");
-    categorySelect.addEventListener("change", function () {
-        if (this.options[this.selectedIndex].value === "التصنيف") {
-            categorySelect.classList.add("error");
-            categorySelect.classList.remove("good");
-            catReq.classList.remove("d-none");
-        } else {
-            categorySelect.classList.remove("error");
-            categorySelect.classList.add("good");
-            catReq.classList.add("d-none");
-        }
-        if (this.options[this.selectedIndex].value === "أخرى") {
-            otherCat.classList.remove("d-none");
-            otherCat.disabled = false;
-            otherCat.setAttribute("required", true);
-            if (otherCat.value.trim() === "") {
-                otherReq.classList.remove("d-none");
-                otherCat.classList.remove("good");
-                otherCat.classList.add("error");
-            }
-        } else {
-            otherCat.disabled = true;
-            otherCat.classList.remove("good");
-            otherCat.classList.remove("error");
-            otherCat.removeAttribute("required");
-            otherReq.classList.add("d-none");
-        }
-    });
-    //! Validation Other Category
-    const otherCat = document.getElementById("other_category");
-    const otherReq = document.getElementById("otherReq");
-    const otherMsg = document.getElementById("otherMsg");
-    otherCat.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s]{3,}$/;
-        if (this.value.trim() === "") {
-            otherReq.classList.remove("d-none");
-            otherMsg.classList.remove("d-none");
-            otherCat.classList.remove("good");
-            otherCat.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                otherCat.classList.add("good");
-                otherCat.classList.remove("error");
-                otherReq.classList.add("d-none");
-                otherMsg.classList.add("d-none");
-            } else {
-                otherCat.classList.remove("good");
-                otherCat.classList.add("error");
-                otherReq.classList.add("d-none");
-                otherMsg.classList.remove("d-none");
-            }
-        }
-    });
-    //! Validation Amount Number
-    const amount = document.getElementById("amount");
-    const amountReq = document.getElementById("amountReq");
-    const amountMsg = document.getElementById("amountMsg");
-    amount.addEventListener("input", function () {
-        const regAmount = /^.{2,}$/;
-        if (this.value.trim() === "") {
-            amountReq.classList.remove("d-none");
-            amountMsg.classList.add("d-none");
-            amount.classList.remove("good");
-            amount.classList.add("error");
-        } else {
-            if (regAmount.test(this.value)) {
-                amount.classList.add("good");
-                amount.classList.remove("error");
-                amountReq.classList.add("d-none");
-                amountMsg.classList.add("d-none");
-            } else {
-                amount.classList.remove("good");
-                amount.classList.add("error");
-                amountReq.classList.add("d-none");
-                amountMsg.classList.remove("d-none");
-            }
-        }
-    });
-    //! Validation Image Upload
-    const invoice_img = document.getElementById("invoice_img");
-    const imgReq = document.getElementById("imgReq");
-    const imgSize = document.getElementById("imgSize");
-    const imgExt = document.getElementById("imgExt");
-    invoice_img.addEventListener("change", function () {
-        const img = invoice_img.files[0];
-        if (img) {
-            validateImage(img, imgReq, imgExt, invoice_img, imgSize);
-        } else {
-            invoice_img.classList.add("error");
-            invoice_img.classList.remove("good");
-            imgReq.classList.remove("d-none");
-            imgSize.classList.add("d-none");
-            imgExt.classList.add("d-none");
-        }
-    });
-    //! Validation Submit Form
-    const miscSubmit = document.getElementById("miscSubmit");
-    if (miscSubmit) {
-        miscSubmit.addEventListener("click", function (event) {
-            event.preventDefault();
-            // const img = invoice_img.files[0];
-            if (validateForm(miscForm)) {
-                miscForm.submit();
-            }
-        });
-    }
-}
-//! Validation For Store Board Members
-const boardForm = document.getElementById("boardForm");
-if (boardForm) {
-    //! Validation For Board Name
-    const boardName = document.getElementById("boardName");
-    const BoardMsg = document.getElementById("NameMsg");
-    const BoardReq = document.getElementById("NameReq");
-    boardName.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s]{3,}$/;
-        if (this.value.trim() === "") {
-            BoardReq.classList.remove("d-none");
-            BoardMsg.classList.add("d-none");
-            boardName.classList.remove("good");
-            boardName.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                boardName.classList.add("good");
-                boardName.classList.remove("error");
-                BoardMsg.classList.add("d-none");
-                BoardReq.classList.add("d-none");
-            } else {
-                boardName.classList.remove("good");
-                boardName.classList.add("error");
-                BoardMsg.classList.remove("d-none");
-                BoardReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Board Position
-    const BoardPosition = document.getElementById("boardPos");
-    const PosMsg = document.getElementById("PosMsg");
-    const PosReq = document.getElementById("PosReq");
-    BoardPosition.addEventListener("input", function () {
-        let letters = /^[\u0600-\u06FF\s]{5,}$/;
-        if (this.value.trim() === "") {
-            PosReq.classList.remove("d-none");
-            PosMsg.classList.add("d-none");
-            BoardPosition.classList.remove("good");
-            BoardPosition.classList.add("error");
-        } else {
-            if (letters.test(this.value)) {
-                BoardPosition.classList.add("good");
-                BoardPosition.classList.remove("error");
-                PosMsg.classList.add("d-none");
-                PosReq.classList.add("d-none");
-            } else {
-                BoardPosition.classList.remove("good");
-                BoardPosition.classList.add("error");
-                PosMsg.classList.remove("d-none");
-                PosReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Board Mob
-    const BoardMob = document.getElementById("boardMob");
-    const MobMsg = document.getElementById("MobMsg");
-    const MobReq = document.getElementById("MobReq");
-    BoardMob.addEventListener("input", function () {
-        const regMOB = /(?=.{11,})/;
-        if (this.value.trim() === "") {
-            MobReq.classList.remove("d-none");
-            MobMsg.classList.add("d-none");
-            BoardMob.classList.remove("good");
-            BoardMob.classList.add("error");
-        } else {
-            if (regMOB.test(this.value)) {
-                BoardMob.classList.add("good");
-                BoardMob.classList.remove("error");
-                MobReq.classList.add("d-none");
-                MobMsg.classList.add("d-none");
-            } else {
-                BoardMob.classList.remove("good");
-                BoardMob.classList.add("error");
-                MobReq.classList.add("d-none");
-                MobMsg.classList.remove("d-none");
-            }
-        }
-    });
-    //! Validation For Board Image
-    const BoardImg = document.getElementById("boardImg");
-    const BoardimgReq = document.getElementById("imgReq");
-    const BoardimgSize = document.getElementById("imgSize");
-    const BoardimgExt = document.getElementById("imgExt");
-    BoardImg.addEventListener("change", function () {
-        const img = BoardImg.files[0];
-        if (img) {
-            validateImage(
-                img,
-                BoardimgReq,
-                BoardimgExt,
-                BoardImg,
-                BoardimgSize
+//! Validation for Donations
+let DonationsForm = document.querySelectorAll("[data-donation-id]");
+if (DonationsForm) {
+    DonationsForm.forEach((form) => {
+        let DonationType = form.querySelectorAll("[data-donationtype-id]");
+        let DonationMoneyType = form.querySelectorAll(
+            "[data-donationmoneytype-id]"
+        );
+        let DonationOtherType = form.querySelectorAll(
+            "[data-donationothertype-id]"
+        );
+        let DonationAmount = form.querySelectorAll("[data-donationamount-id]");
+        let DonationInvoice = form.querySelectorAll("[data-inv-id]");
+        let DonationDuration = form.querySelectorAll("[data-duration-id]");
+        //! Donation Type Validation
+        DonationType.forEach((type) => {
+            const typeSelect = form.querySelector(
+                `select[name="donation_type"][data-donationtype-id="${type.dataset.donationtypeId}"]`
             );
-        } else {
-            BoardImg.classList.add("error");
-            BoardImg.classList.remove("good");
-            BoardimgReq.classList.remove("d-none");
-            BoardimgSize.classList.add("d-none");
-            BoardimgExt.classList.add("d-none");
-        }
-    });
-    //! Validation For Submit Button
-    const boardSubmit = document.getElementById("boardSubmit");
-    if (boardSubmit) {
-        boardSubmit.addEventListener("click", function (event) {
-            event.preventDefault();
-            if (validateForm(boardForm)) {
-                boardForm.submit();
+            const typeReq = form.querySelector(
+                `p.donationtypeReq[data-donationtype-id="${type.dataset.donationtypeId}"]`
+            );
+            if (typeSelect) {
+                typeSelect.addEventListener("change", function () {
+                    let selectedDonation =
+                        typeSelect.options[typeSelect.selectedIndex].value;
+                    if (selectedDonation === "نقدي") {
+                        typeSelect.classList.add("good");
+                        typeSelect.classList.remove("error");
+                        typeReq.classList.add("d-none");
+                        DonationMoneyType.forEach((other) => {
+                            const otherSelect = form.querySelector(
+                                `select[name="money_type"][data-donationmoneytype-id="${other.dataset.donationmoneytypeId}"]`
+                            );
+                            const otherSelectReq = form.querySelector(
+                                `p.donationmoneytype[data-donationmoneytype-id="${other.dataset.donationmoneytypeId}"]`
+                            );
+                            const otherOptions =
+                                otherSelect.options[otherSelect.selectedIndex]
+                                    .value;
+                            if (otherOptions === "نوع التبرع النقدي") {
+                                otherSelect.classList.remove("d-none");
+                                otherSelect.classList.add("error");
+                                otherSelectReq.classList.remove("d-none");
+                            } else {
+                                otherSelect.classList.remove("d-none");
+                                otherSelect.classList.remove("error");
+                                otherSelectReq.classList.add("d-none");
+                                otherSelect.classList.add("good");
+                            }
+                        });
+                        DonationOtherType.forEach((other) => {
+                            const OtherType = form.querySelector(
+                                `input[name="other_type"][data-donationothertype-id="${other.dataset.donationothertypeId}"]`
+                            );
+                            const OtherTypeReq = form.querySelector(
+                                `p.donationothertype[data-donationothertype-id="${other.dataset.donationothertypeId}"]`
+                            );
+                            if (OtherType) {
+                                OtherType.classList.add("d-none");
+                                OtherType.classList.remove("error");
+                                OtherTypeReq.classList.add("d-none");
+                            } else {
+                                OtherType.classList.remove("d-none");
+                                OtherType.classList.add("error");
+                                OtherTypeReq.classList.remove("d-none");
+                            }
+                        });
+                    } else if (selectedDonation === "أخرى") {
+                        typeSelect.classList.add("good");
+                        typeSelect.classList.remove("error");
+                        typeReq.classList.add("d-none");
+                        DonationMoneyType.forEach((money) => {
+                            const MoneyType = form.querySelector(
+                                `select[name="money_type"][data-donationmoneytype-id="${money.dataset.donationmoneytypeId}"]`
+                            );
+                            const MoneyTypeReq = form.querySelector(
+                                `p.donationmoneytype[data-donationmoneytype-id="${money.dataset.donationmoneytypeId}"]`
+                            );
+                            if (MoneyType) {
+                                MoneyType.classList.add("d-none");
+                                MoneyType.classList.remove("error");
+                                MoneyTypeReq.classList.add("d-none");
+                            }
+                        });
+                        DonationOtherType.forEach((other) => {
+                            const OtherDonationType = form.querySelector(
+                                `input[name="other_type"][data-donationothertype-id="${other.dataset.donationothertypeId}"]`
+                            );
+                            const OtherTypeReq = form.querySelector(
+                                `p.donationothertype[data-donationothertype-id="${other.dataset.donationothertypeId}"]`
+                            );
+                            if (OtherDonationType) {
+                                OtherDonationType.classList.remove("d-none");
+                                if (OtherDonationType.value.trim() === "") {
+                                    OtherDonationType.classList.add("error");
+                                    OtherTypeReq.classList.remove("d-none");
+                                } else {
+                                    OtherDonationType.classList.remove("error");
+                                    OtherDonationType.classList.add("good");
+                                    OtherTypeReq.classList.add("d-none");
+                                }
+                            }
+                        });
+                    }
+                });
             }
         });
-    }
-}
-//! Adding Debt Validation
-const debtForm = document.getElementById("debtForm");
-if (debtForm) {
-    //! Validation For Choosen Year
-    const yearSelect = document.getElementById("costYear");
-    const costYearMsg = document.getElementById("costYearMsg");
-    yearSelect.addEventListener("change", function () {
-        if (this.options[this.selectedIndex].value === "السنة") {
-            yearSelect.classList.add("error");
-            yearSelect.classList.remove("good");
-            costYearMsg.classList.remove("d-none");
-        } else {
-            yearSelect.classList.remove("error");
-            yearSelect.classList.add("good");
-            costYearMsg.classList.add("d-none");
-        }
-    });
-    //! Validation For Year Cost
-    const yearSub = document.getElementById("yearly_cost");
-    const costMsg = document.getElementById("costMsg");
-    const costReq = document.getElementById("costReq");
-    yearSub.addEventListener("input", function () {
-        let regCost = /(?=.{2,4})/;
-        if (this.value.trim() === "") {
-            costReq.classList.remove("d-none");
-            costMsg.classList.add("d-none");
-            yearSub.classList.remove("good");
-            yearSub.classList.add("error");
-        } else {
-            if (regCost.test(this.value)) {
-                yearSub.classList.add("good");
-                yearSub.classList.remove("error");
-                costReq.classList.add("d-none");
-                costMsg.classList.add("d-none");
-            } else {
-                yearSub.classList.remove("good");
-                yearSub.classList.add("error");
-                costReq.classList.add("d-none");
-                costMsg.classList.remove("d-none");
-            }
-        }
-    });
-    //! Validation For Submit Button
-    const debtSubmit = document.getElementById("debtSubmit");
-    if (debtSubmit) {
-        debtSubmit.addEventListener("click", function (event) {
-            event.preventDefault();
-            if (validateForm(debtForm)) {
-                debtForm.submit();
-            }
-        });
-    }
-}
-//! Pay Debts Validation
-const DelaysForm = document.querySelectorAll("[data-payDelay-id]");
-if (DelaysForm) {
-    const invoices = document.querySelectorAll("[data-invoice-id]");
-    const AllDebts = document.querySelectorAll("[data-delay-id]");
-    DelaysForm.forEach((form) => {
-        //! Invoices Number Validation
-        invoices.forEach((inv) => {
-            let invoiceNo = form.querySelector(`input[name="invoice_no"][data-invoice-id="${inv.dataset.invoiceId}"]`);
-            let invReq = form.querySelector(`p.invReq[data-invoice-id="${inv.dataset.invoiceId}"]`);
-            let invMsg = form.querySelector(`p.invMsg[data-invoice-id="${inv.dataset.invoiceId}"]`);
-            if (invoiceNo) {
-                inv.addEventListener("input", function () {
-                    let invoiceReg = /^\d{5}$/;
-                    if (this.value.trim() === "") {
-                        invReq.classList.remove("d-none");
-                        invMsg.classList.add("d-none");
-                        inv.classList.remove("good");
-                        inv.classList.add("error");
+        //! Other Donation Money Type Validation
+        DonationMoneyType.forEach((other) => {
+            const otherSelect = form.querySelector(
+                `select[name="money_type"][data-donationmoneytype-id="${other.dataset.donationmoneytypeId}"]`
+            );
+            const otherReq = form.querySelector(
+                `p.donationmoneytype[data-donationmoneytype-id="${other.dataset.donationmoneytypeId}"]`
+            );
+            if (otherSelect) {
+                otherSelect.addEventListener("change", function () {
+                    let selectedDonation =
+                        otherSelect.options[otherSelect.selectedIndex].value;
+                    if (selectedDonation === "نوع التبرع النقدي") {
+                        otherSelect.classList.remove("good");
+                        otherSelect.classList.add("error");
+                        otherReq.classList.remove("d-none");
                     } else {
-                        if (invoiceReg.test(this.value)) {
-                            inv.classList.add("good");
-                            inv.classList.remove("error");
-                            invReq.classList.add("d-none");
-                            invMsg.classList.add("d-none");
+                        otherSelect.classList.remove("error");
+                        otherSelect.classList.add("good");
+                        otherReq.classList.add("d-none");
+                    }
+                });
+            }
+        });
+        //! Other Donation Validation
+        DonationOtherType.forEach((other) => {
+            const otherInput = form.querySelector(
+                `input[name="other_type"][data-donationothertype-id="${other.dataset.donationothertypeId}"]`
+            );
+            const otherInputReq = form.querySelector(
+                `p.donationothertype[data-donationothertype-id="${other.dataset.donationothertypeId}"]`
+            );
+            if (otherInput) {
+                otherInput.addEventListener("input", function () {
+                    let letters = /(?=.{3,})/;
+                    if (this.value.trim() === "") {
+                        otherInput.classList.add("error");
+                        otherInput.classList.remove("good");
+                        otherInputReq.classList.remove("d-none");
+                    } else {
+                        if (letters.test(this.value)) {
+                            otherInput.classList.remove("error");
+                            otherInput.classList.add("good");
+                            otherInputReq.classList.add("d-none");
                         } else {
-                            inv.classList.remove("good");
-                            inv.classList.add("error");
-                            invReq.classList.add("d-none");
-                            invMsg.classList.remove("d-none");
+                            otherInput.classList.add("error");
+                            otherInput.classList.remove("good");
+                            otherInputReq.classList.remove("d-none");
                         }
                     }
                 });
             }
         });
-        //! Debt Amount Validation
-        AllDebts.forEach((debt) => {
-            let debtAmount = form.querySelector(
-                `input[name="paied"][data-delay-id="${debt.dataset.delayId}"]`
+        //! Donation Amount Validation
+        DonationAmount.forEach((amount) => {
+            const amountInput = form.querySelector(
+                `input[name="amount"][data-donationamount-id="${amount.dataset.donationamountId}"]`
             );
-            let debtReq = form.querySelector(
-                `p.payReq[data-delay-id="${debt.dataset.delayId}"]`
+            const amountInputReq = form.querySelector(
+                `p.donationamountReq[data-donationamount-id="${amount.dataset.donationamountId}"]`
             );
-            let debtMsg = form.querySelector(
-                `p.payMsg[data-delay-id="${debt.dataset.delayId}"]`
+            const amountInputMsg = form.querySelector(
+                `p.donationamountMsg[data-donationamount-id="${amount.dataset.donationamountId}"]`
             );
-            if (debtAmount) {
-                debt.addEventListener("input", function () {
-                    let debtReg = /(?=.{2,5})/;
+            if (amountInput) {
+                amountInput.addEventListener("input", function () {
+                    let letters = /^\d{2,}$/;
                     if (this.value.trim() === "") {
-                        debtReq.classList.remove("d-none");
-                        debtMsg.classList.add("d-none");
-                        debt.classList.remove("good");
-                        debt.classList.add("error");
+                        amountInputReq.classList.remove("d-none");
+                        amountInputMsg.classList.add("d-none");
+                        amountInput.classList.remove("good");
+                        amountInput.classList.add("error");
                     } else {
-                        if (debtReg.test(this.value)) {
-                            debt.classList.add("good");
-                            debt.classList.remove("error");
-                            debtReq.classList.add("d-none");
-                            debtMsg.classList.add("d-none");
+                        if (letters.test(this.value)) {
+                            amountInput.classList.add("good");
+                            amountInput.classList.remove("error");
+                            amountInputMsg.classList.add("d-none");
+                            amountInputReq.classList.add("d-none");
                         } else {
-                            debt.classList.remove("good");
-                            debt.classList.add("error");
-                            debtReq.classList.add("d-none");
-                            debtMsg.classList.remove("d-none");
+                            amountInput.classList.remove("good");
+                            amountInput.classList.add("error");
+                            amountInputMsg.classList.remove("d-none");
+                            amountInputReq.classList.add("d-none");
                         }
                     }
                 });
             }
         });
-        //! Validation For Submit Button
-        const AllDelaySubmit = form.querySelectorAll("[data-DelaysForm-id]");
-        if (AllDelaySubmit) {
-            AllDelaySubmit.forEach((delay) => {
-                delay.addEventListener("click", function (event) {
+        //! Donation Invoice Validation
+        DonationInvoice.forEach((inv) => {
+            const invInput = form.querySelector(
+                `input[name="invoice_no"][data-inv-id="${inv.dataset.invId}"]`
+            );
+            const invInputReq = form.querySelector(
+                `p.invReq[data-inv-id="${inv.dataset.invId}"]`
+            );
+            const invInputMsg = form.querySelector(
+                `p.invMsg[data-inv-id="${inv.dataset.invId}"]`
+            );
+            if (invInput) {
+                invInput.addEventListener("input", function () {
+                    let letters = /^\d{5}$/;
+                    if (this.value.trim() === "") {
+                        invInputReq.classList.remove("d-none");
+                        invInputMsg.classList.add("d-none");
+                        invInput.classList.remove("good");
+                        invInput.classList.add("error");
+                    } else {
+                        if (letters.test(this.value)) {
+                            invInput.classList.add("good");
+                            invInput.classList.remove("error");
+                            invInputMsg.classList.add("d-none");
+                            invInputReq.classList.add("d-none");
+                        } else {
+                            invInput.classList.remove("good");
+                            invInput.classList.add("error");
+                            invInputMsg.classList.remove("d-none");
+                            invInputReq.classList.add("d-none");
+                        }
+                    }
+                });
+            }
+        });
+        //! Donation Duration Validation
+        DonationDuration.forEach((dur) => {
+            const durInput = form.querySelector(`.duration`);
+            const durInputReq = form.querySelector(
+                `p.durReq[data-duration-id="${dur.dataset.durationId}"]`
+            );
+            if (durInput) {
+                durInput.addEventListener("change", function () {
+                    if (dur.selectedOptions.length === 0) {
+                        durInputReq.classList.remove("d-none");
+                        durInput.classList.remove("good");
+                        durInput.classList.add("error");
+                    } else {
+                        durInput.classList.add("good");
+                        durInput.classList.remove("error");
+                        durInputReq.classList.add("d-none");
+                    }
+                });
+            }
+        });
+        //! Donation Submition Validation
+        const AllDonationSubmit = form.querySelectorAll(
+            "[data-donationSubmit-id]"
+        );
+        if (AllDonationSubmit) {
+            AllDonationSubmit.forEach((donation) => {
+                donation.addEventListener("click", function (event) {
                     event.preventDefault();
                     if (validateForm(form)) {
                         form.submit();
@@ -1136,591 +705,1110 @@ if (DelaysForm) {
         }
     });
 }
-//! Pay Old Payment Validation
-const OldPaymentForm = document.querySelectorAll("[data-paymentForm-id]");
-if (OldPaymentForm) {
-    const paymentInvs = document.querySelectorAll("[data-inv-id]");
-    const paymentAmount = document.querySelectorAll("[data-pay-id]");
-    OldPaymentForm.forEach((payment) => {
-        //! Invoices Number Validation
-        paymentInvs.forEach((inv) => {
-            let payInput = payment.querySelector(`input[name="invoice_no"][data-inv-id="${inv.dataset.invId}"]`);
-            let payReq = payment.querySelector(`p.paymentInvReq[data-inv-id="${inv.dataset.invId}"]`);
-            let payMsg = payment.querySelector(`p.paymentInvMsg[data-inv-id="${inv.dataset.invId}"]`);
-            if (payInput) {
-                inv.addEventListener("input", function () {
-                    let invoiceReg = /^\d{5}$/;
-                    if (this.value.trim() === "") {
-                        payReq.classList.remove("d-none");
-                        payMsg.classList.add("d-none");
-                        inv.classList.remove("good");
-                        inv.classList.add("error");
-                    } else {
-                        if (invoiceReg.test(this.value)) {
-                            inv.classList.add("good");
-                            inv.classList.remove("error");
-                            payReq.classList.add("d-none");
-                            payMsg.classList.add("d-none");
-                        } else {
-                            inv.classList.remove("good");
-                            inv.classList.add("error");
-                            payReq.classList.add("d-none");
-                            payMsg.classList.remove("d-none");
-                        }
-                    }
-                })
+//! Add Tombs Validation
+const tombForm = document.getElementById("newTombForm");
+if (tombForm) {
+    //! Tomb Name Validation
+    const tombName = tombForm.querySelector("#tombName");
+    const tombReq = tombForm.querySelector("#tombReq");
+    const tombMsg = tombForm.querySelector("#tombMsg");
+    if (tombName) {
+        tombName.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s\d\/\-\.\,]{3,}$/;
+            if (this.value.trim() === "") {
+                tombReq.classList.remove("d-none");
+                tombMsg.classList.add("d-none");
+                tombName.classList.remove("good");
+                tombName.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    tombName.classList.add("good");
+                    tombName.classList.remove("error");
+                    tombMsg.classList.add("d-none");
+                    tombReq.classList.add("d-none");
+                } else {
+                    tombName.classList.remove("good");
+                    tombName.classList.add("error");
+                    tombMsg.classList.remove("d-none");
+                    tombReq.classList.add("d-none");
+                }
             }
         });
-        //! Payment Amount Validation
-        paymentAmount.forEach((pay) => {
-            let amountInput = payment.querySelector(`input[name="olddelay"][data-pay-id="${pay.dataset.payId}"]`);
-            let amountReq = payment.querySelector(`p.paymentAmountReq[data-pay-id="${pay.dataset.payId}"]`);
-            let amountMsg = payment.querySelector(`p.paymentAmountMsg[data-pay-id="${pay.dataset.payId}"]`);
-            if (amountInput) {
-                pay.addEventListener("input", function () {
-                    const amountReg = /(?=.{2,5})/;
-                    if (this.value.trim() === "") {
-                        amountReq.classList.remove("d-none");
-                        amountMsg.classList.add("d-none");
-                        pay.classList.remove("good");
-                        pay.classList.add("error");
-                    } else {
-                        if (amountReg.test(this.value)) {
-                            pay.classList.add("good");
-                            pay.classList.remove("error");
-                            amountReq.classList.add("d-none");
-                            amountMsg.classList.add("d-none");
-                        } else {
-                            pay.classList.remove("good");
-                            pay.classList.add("error");
-                            amountReq.classList.add("d-none");
-                            amountMsg.classList.remove("d-none");
-                        }
-                    }
-                })
+    }
+    //! Tomb Power Validation
+    const tombPower = tombForm.querySelector("#tombPower");
+    const tombPowerReq = tombForm.querySelector("#powerReq");
+    if (tombPower) {
+        tombPower.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "قوة المقبرة (بالغرف)") {
+                tombPower.classList.add("error");
+                tombPower.classList.remove("good");
+                tombPowerReq.classList.remove("d-none");
+            } else {
+                tombPower.classList.remove("error");
+                tombPower.classList.add("good");
+                tombPowerReq.classList.add("d-none");
+            }
+            if (selectedIndexValue === "أخرى") {
+                otherPower.disabled = false;
+                otherPower.classList.remove("d-none");
+                otherPower.classList.add("error");
+                otherPowerReq.classList.remove("d-none");
+            } else {
+                otherPower.disabled = true;
+                otherPower.classList.add("d-none");
+                otherPower.classList.remove("error");
+                otherPowerReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Other Tomb Power Validation
+    const otherPower = tombForm.querySelector("#otherPower");
+    const otherPowerReq = tombForm.querySelector("#otherPowerReq");
+    if (otherPower) {
+        otherPower.addEventListener("input", function () {
+            let letters = /^[0-9]+$/;
+            if (this.value.trim() === "") {
+                otherPower.classList.remove("good");
+                otherPower.classList.add("error");
+                otherPowerReq.classList.remove("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    otherPower.classList.add("good");
+                    otherPower.classList.remove("error");
+                    otherPowerReq.classList.add("d-none");
+                } else {
+                    otherPower.classList.remove("good");
+                    otherPower.classList.add("error");
+                    otherPowerReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Update Other Tomb Power Validation
+    const updateOtherPowerForm = document.querySelectorAll(
+        "[data-tombPower-id]"
+    );
+    if (updateOtherPowerForm) {
+        updateOtherPowerForm.forEach((power) => {
+            const powerSelect = power.querySelectorAll("[data-powerselect-id]");
+            const otherPowerSelect = power.querySelectorAll("[data-otherpowerselect-id]");
+            //! Update Tomb Power Validation
+            function handleUpdateTombOtherPower(updateSelect) {
+                const selectedIndexValue = updateSelect.options[updateSelect.selectedIndex].value;
+                if (selectedIndexValue === "شهري") {
+                    otherPowerSelect.forEach((input) => {
+                        input.disabled = true;
+                        input.classList.add("d-none");
+                    });
+                } else if (selectedIndexValue === "0") {
+                    otherPowerSelect.forEach((input) => {
+                        input.disabled = false;
+                        input.classList.remove("d-none");
+                    });
+                }
+            }
+            powerSelect.forEach((inputSelect) => {
+                const updateSelect = power.querySelector(`select[name="power"][data-powerselect-id="${inputSelect.dataset.powerselectId}"]`);
+                if (updateSelect) {
+                    handleUpdateTombOtherPower(updateSelect);
+                    updateSelect.addEventListener("change", function () {
+                        handleUpdateTombOtherPower(updateSelect);
+                    });
+                }
+            })
+        });
+    }
+    //! Tomb Type Validation
+    const tombType = tombForm.querySelector("#tombType");
+    const tombTypeReq = tombForm.querySelector("#typeReq");
+    if (tombType) {
+        tombType.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "نوع المقبرة") {
+                tombType.classList.add("error");
+                tombType.classList.remove("good");
+                tombTypeReq.classList.remove("d-none");
+            } else {
+                tombType.classList.remove("error");
+                tombType.classList.add("good");
+                tombTypeReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Tomb Specefices Validation
+    const tombSpecifices = tombForm.querySelector("#tombSpecifices");
+    const tombSpecificesReq = tombForm.querySelector("#tombSpecificesReq");
+    if (tombSpecifices) {
+        tombSpecifices.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "تخصص المقبره") {
+                tombSpecifices.classList.add("error");
+                tombSpecifices.classList.remove("good");
+                tombSpecificesReq.classList.remove("d-none");
+            } else {
+                tombSpecifices.classList.remove("error");
+                tombSpecifices.classList.add("good");
+                tombSpecificesReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Tomb Region Validation
+    const tombRegion = tombForm.querySelector("#tombRegion");
+    const tombRegionReq = tombForm.querySelector("#regionReq");
+    if (tombRegion) {
+        tombRegion.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "المنطقة") {
+                tombRegion.classList.add("error");
+                tombRegion.classList.remove("good");
+                tombRegionReq.classList.remove("d-none");
+            } else {
+                tombRegion.classList.remove("error");
+                tombRegion.classList.add("good");
+                tombRegionReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Tomb Annual Cost Validation
+    const tombCost = tombForm.querySelector("#tombCost");
+    const costReq = tombForm.querySelector("#costReq");
+    const costMsg = tombForm.querySelector("#costMsg");
+    if (tombCost) {
+        tombCost.addEventListener("input", function () {
+            let letters = /^[0-9]{2,}$/;
+            if (this.value.trim() === "") {
+                costReq.classList.remove("d-none");
+                costMsg.classList.add("d-none");
+                tombCost.classList.remove("good");
+                tombCost.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    tombCost.classList.add("good");
+                    tombCost.classList.remove("error");
+                    costMsg.classList.add("d-none");
+                    costReq.classList.add("d-none");
+                } else {
+                    tombCost.classList.remove("good");
+                    tombCost.classList.add("error");
+                    costMsg.classList.remove("d-none");
+                    costReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Tomb Power Validation
+    //! Tomb Type Validation
+    //! Tomb Region Validation
+    //! Tomb Annual Cost Validation
+    //! Tomb Submition Validation
+    const tombSubmition = tombForm.querySelector("#tombSubmit");
+    if (tombSubmition) {
+        tombSubmition.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (validateForm(tombForm)) {
+                tombForm.submit();
+            }
+        });
+    }
+}
+//! Old Deceased Validation
+const OldDeceasedForm = document.getElementById("OldDeceasedForm");
+if (OldDeceasedForm) {
+    //! Old Deceased Name Validation
+    const oldDeceasedName = OldDeceasedForm.querySelector("#oldDeceasedName");
+    const nameReq = OldDeceasedForm.querySelector("#oldReq");
+    const nameMsg = OldDeceasedForm.querySelector("#oldMsg");
+    if (oldDeceasedName) {
+        oldDeceasedName.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]{3,}$/;
+            if (this.value.trim() === "") {
+                nameReq.classList.remove("d-none");
+                nameMsg.classList.add("d-none");
+                oldDeceasedName.classList.remove("good");
+                oldDeceasedName.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    oldDeceasedName.classList.add("good");
+                    oldDeceasedName.classList.remove("error");
+                    nameMsg.classList.add("d-none");
+                    nameReq.classList.add("d-none");
+                } else {
+                    oldDeceasedName.classList.remove("good");
+                    oldDeceasedName.classList.add("error");
+                    nameMsg.classList.remove("d-none");
+                    nameReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Old Deceased Region Select Validation
+    const oldDeceasedRegion = OldDeceasedForm.querySelector("#region");
+    const regionReq = OldDeceasedForm.querySelector("#regionSelectReq");
+    if (oldDeceasedRegion) {
+        oldDeceasedRegion.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "المنطقة") {
+                oldDeceasedRegion.classList.add("error");
+                oldDeceasedRegion.classList.remove("good");
+                regionReq.classList.remove("d-none");
+            } else {
+                oldDeceasedRegion.classList.remove("error");
+                oldDeceasedRegion.classList.add("good");
+                regionReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Old Deceased Tomb Select Validation
+    const oldDeceasedTomb = OldDeceasedForm.querySelector("#regionTomb");
+    const tombReq = OldDeceasedForm.querySelector("#tombSelectReq");
+    if (oldDeceasedTomb) {
+        oldDeceasedTomb.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "المقبرة") {
+                oldDeceasedTomb.classList.add("error");
+                oldDeceasedTomb.classList.remove("good");
+                tombReq.classList.remove("d-none");
+            } else {
+                oldDeceasedTomb.classList.remove("error");
+                oldDeceasedTomb.classList.add("good");
+                tombReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Old Deceased Death Date Validation
+    const oldDeceasedDeathDate =
+        OldDeceasedForm.querySelector("#deceasedDeath");
+    const deathDateReq = OldDeceasedForm.querySelector("#deathDateReq");
+    if (oldDeceasedDeathDate) {
+        oldDeceasedDeathDate.addEventListener("change", function () {
+            const deathDateValue = oldDeceasedDeathDate.value;
+            if (deathDateValue === "") {
+                oldDeceasedDeathDate.classList.add("error");
+                oldDeceasedDeathDate.classList.remove("good");
+                deathDateReq.classList.remove("d-none");
+            } else {
+                oldDeceasedDeathDate.classList.remove("error");
+                oldDeceasedDeathDate.classList.add("good");
+                deathDateReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Old Deceased Burial Date Validation
+    const oldDeceasedBurialDate =
+        OldDeceasedForm.querySelector("#deceasedBurial");
+    const burialDateReq = OldDeceasedForm.querySelector("#burialReq");
+    if (oldDeceasedBurialDate) {
+        oldDeceasedBurialDate.addEventListener("change", function () {
+            const deathDateValue = oldDeceasedBurialDate.value;
+            if (deathDateValue === "") {
+                oldDeceasedBurialDate.classList.add("error");
+                oldDeceasedBurialDate.classList.remove("good");
+                burialDateReq.classList.remove("d-none");
+            } else {
+                oldDeceasedBurialDate.classList.remove("error");
+                oldDeceasedBurialDate.classList.add("good");
+                burialDateReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Old Deceased Submitition Validation
+    const OldSubmit = OldDeceasedForm.querySelector("#OldSubmit");
+    if (OldSubmit) {
+        OldSubmit.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (validateForm(OldDeceasedForm)) {
+                OldDeceasedForm.submit();
+            }
+        });
+    }
+}
+//! Region Form Validation
+const RegionForm = document.getElementById("regionForm");
+if (RegionForm) {
+    //! Region Name Validation
+    const regionName = RegionForm.querySelector("#regionName");
+    const regionNameReq = RegionForm.querySelector("#regionNameReq");
+    if (regionName) {
+        regionName.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]+$/;
+            if (this.value.trim() === "") {
+                regionNameReq.classList.remove("d-none");
+                regionName.classList.remove("good");
+                regionName.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    regionName.classList.add("good");
+                    regionName.classList.remove("error");
+                    regionNameReq.classList.add("d-none");
+                } else {
+                    regionName.classList.remove("good");
+                    regionName.classList.add("error");
+                    regionNameReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Region Power Validation
+    const regionPower = RegionForm.querySelector("#regionPower");
+    const regionPowerReq = RegionForm.querySelector("#regionPowerReq");
+    const regionPowerMsg = RegionForm.querySelector("#regionPowerMsg");
+    if (regionPower) {
+        regionPower.addEventListener("input", function () {
+            let letters = /^[0-9]{2}$/;
+            if (this.value.trim() === "") {
+                regionPower.classList.remove("good");
+                regionPower.classList.add("error");
+                regionPowerReq.classList.remove("d-none");
+                regionPowerMsg.classList.add("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    regionPower.classList.add("good");
+                    regionPower.classList.remove("error");
+                    regionPowerReq.classList.add("d-none");
+                    regionPowerMsg.classList.add("d-none");
+                } else {
+                    regionPower.classList.remove("good");
+                    regionPower.classList.add("error");
+                    regionPowerReq.classList.add("d-none");
+                    regionPowerMsg.classList.remove("d-none");
+                }
+            }
+        });
+    }
+    //! Region Submition Validation
+    const regionSubmition = RegionForm.querySelector("#regionSubmition");
+    if (regionSubmition) {
+        regionSubmition.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (validateForm(RegionForm)) {
+                RegionForm.submit();
+            }
+        });
+    }
+}
+//! Deceased Form Validation
+const deceasedForm = document.getElementById("deceasedForm");
+if (deceasedForm) {
+    //! Deceased Name
+    let DeceasedName = deceasedForm.querySelector("#deceasedName");
+    let DeceasedNameReq = deceasedForm.querySelector("#deceasedNameReq");
+    let DeceasedNameMsg = deceasedForm.querySelector("#deceasedNameMsg");
+    if (DeceasedName) {
+        DeceasedName.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]{3,}$/;
+            if (this.value.trim() === "") {
+                DeceasedNameReq.classList.remove("d-none");
+                DeceasedNameMsg.classList.add("d-none");
+                DeceasedName.classList.remove("good");
+                DeceasedName.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    DeceasedName.classList.add("good");
+                    DeceasedName.classList.remove("error");
+                    DeceasedNameMsg.classList.add("d-none");
+                    DeceasedNameReq.classList.add("d-none");
+                } else {
+                    DeceasedName.classList.remove("good");
+                    DeceasedName.classList.add("error");
+                    DeceasedNameMsg.classList.remove("d-none");
+                    DeceasedNameReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Deceased Death Place
+    let DeceasedDeathPlace = deceasedForm.querySelector("#death_place");
+    let DeceasedDeathPlaceReq = deceasedForm.querySelector("#deathPlaceReq");
+    if (DeceasedDeathPlace) {
+        DeceasedDeathPlace.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]+$/;
+            if (this.value.trim() === "") {
+                DeceasedDeathPlace.classList.remove("good");
+                DeceasedDeathPlace.classList.add("error");
+                DeceasedDeathPlaceReq.classList.remove("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    DeceasedDeathPlace.classList.add("good");
+                    DeceasedDeathPlace.classList.remove("error");
+                    DeceasedDeathPlaceReq.classList.add("d-none");
+                } else {
+                    DeceasedDeathPlace.classList.remove("good");
+                    DeceasedDeathPlace.classList.add("error");
+                    DeceasedDeathPlaceReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Deceased Death Date
+    const DeceasedDeathDate = deceasedForm.querySelector("#death_date");
+    const DeceasedDeathReq = deceasedForm.querySelector("#death_date_req");
+    if (DeceasedDeathDate) {
+        DeceasedDeathDate.addEventListener("change", function () {
+            const deathDateValue = DeceasedDeathDate.value;
+            if (deathDateValue === "") {
+                DeceasedDeathDate.classList.add("error");
+                DeceasedDeathDate.classList.remove("good");
+                DeceasedDeathReq.classList.remove("d-none");
+            } else {
+                DeceasedDeathDate.classList.remove("error");
+                DeceasedDeathDate.classList.add("good");
+                DeceasedDeathReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Burial Date
+    const BurialDate = deceasedForm.querySelector("#burial_date");
+    const BurialDateReq = deceasedForm.querySelector("#burial_date_req");
+    if (BurialDate) {
+        BurialDate.addEventListener("change", function () {
+            const deathDateValue = BurialDate.value;
+            if (deathDateValue === "") {
+                BurialDate.classList.add("error");
+                BurialDate.classList.remove("good");
+                BurialDateReq.classList.remove("d-none");
+            } else {
+                BurialDate.classList.remove("error");
+                BurialDate.classList.add("good");
+                BurialDateReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Burial Cost
+    let BurialCost = deceasedForm.querySelector("#burial_cost");
+    let BurialCostReq = deceasedForm.querySelector("#burial_cost_req");
+    if (BurialCost) {
+        BurialCost.addEventListener("input", function () {
+            let letters = /^\d+$/;
+            if (this.value.trim() === "") {
+                BurialCostReq.classList.remove("d-none");
+                BurialCost.classList.remove("good");
+                BurialCost.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    BurialCost.classList.add("good");
+                    BurialCost.classList.remove("error");
+                    BurialCostReq.classList.add("d-none");
+                } else {
+                    BurialCost.classList.remove("good");
+                    BurialCost.classList.add("error");
+                    BurialCostReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Deceased Gender
+    const DeceasedGender = deceasedForm.querySelector("#gender");
+    const GenderReq = deceasedForm.querySelector("#genReq");
+    if (DeceasedGender) {
+        DeceasedGender.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "جنس المتوفي") {
+                DeceasedGender.classList.add("error");
+                DeceasedGender.classList.remove("good");
+                GenderReq.classList.remove("d-none");
+            } else {
+                DeceasedGender.classList.remove("error");
+                DeceasedGender.classList.add("good");
+                GenderReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Size
+    const DeceasedSize = deceasedForm.querySelector("#size");
+    const SizeReq = deceasedForm.querySelector("#sizeReq");
+    if (DeceasedSize) {
+        DeceasedSize.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "حجم المتوفي") {
+                DeceasedSize.classList.add("error");
+                DeceasedSize.classList.remove("good");
+                SizeReq.classList.remove("d-none");
+            } else {
+                DeceasedSize.classList.remove("error");
+                DeceasedSize.classList.add("good");
+                SizeReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Age
+    const DeceasedAge = deceasedForm.querySelector("#age");
+    const AgeReq = deceasedForm.querySelector("#ageReq");
+    if (DeceasedAge) {
+        DeceasedAge.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "سن المتوفي") {
+                DeceasedAge.classList.add("error");
+                DeceasedAge.classList.remove("good");
+                AgeReq.classList.remove("d-none");
+            } else {
+                DeceasedAge.classList.remove("error");
+                DeceasedAge.classList.add("good");
+                AgeReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Images
+    const DeceasedImgsFiles = deceasedForm.querySelector("#imgs");
+    const DeceasedImgsFilesReq = deceasedForm.querySelector("#ImgsReq");
+    const DeceasedImgsFilesSize = deceasedForm.querySelector("#ImgsSize");
+    const DeceasedImgsFilesExt = deceasedForm.querySelector("#ImgsExt");
+    if (DeceasedImgsFiles) {
+        DeceasedImgsFiles.addEventListener("change", function () {
+            const img = DeceasedImgsFiles.files[0];
+            if (img) {
+                validateImage(
+                    img,
+                    DeceasedImgsFilesReq,
+                    DeceasedImgsFilesExt,
+                    DeceasedImgsFiles,
+                    DeceasedImgsFilesSize
+                );
+            } else {
+                DeceasedImgsFiles.classList.remove("good");
+                DeceasedImgsFiles.classList.add("error");
+                DeceasedImgsFilesReq.classList.remove("d-none");
+                DeceasedImgsFilesSize.classList.add("d-none");
+                DeceasedImgsFilesExt.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased PDF
+    const DeceasedPdfFiles = deceasedForm.querySelector("#pdfs");
+    const DeceasedPdfFilesReq = deceasedForm.querySelector("#PdfReq");
+    const DeceasedPdfFilesSize = deceasedForm.querySelector("#PdfSize");
+    const DeceasedPdfFilesExt = deceasedForm.querySelector("#PdfExt");
+    if (DeceasedPdfFiles) {
+        DeceasedPdfFiles.addEventListener("change", function () {
+            const file = DeceasedPdfFiles.files[0];
+            if (file) {
+                validateFile(
+                    file,
+                    DeceasedPdfFilesReq,
+                    DeceasedPdfFilesExt,
+                    DeceasedPdfFilesSize,
+                    DeceasedPdfFiles
+                );
+            } else {
+                DeceasedPdfFiles.classList.remove("good");
+                DeceasedPdfFiles.classList.add("error");
+                DeceasedPdfFilesReq.classList.remove("d-none");
+                DeceasedPdfFilesSize.classList.add("d-none");
+                DeceasedPdfFilesExt.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Washer
+    const DeceasedWasher = deceasedForm.querySelector("#the_washer");
+    const DeceasedWasherReq = deceasedForm.querySelector("#washerReq");
+    if (DeceasedWasher) {
+        DeceasedWasher.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s\d\/\-\.\,]+$/;
+            if (this.value.trim() === "") {
+                DeceasedWasher.classList.remove("good");
+                DeceasedWasher.classList.add("error");
+                DeceasedWasherReq.classList.remove("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    DeceasedWasher.classList.add("good");
+                    DeceasedWasher.classList.remove("error");
+                    DeceasedWasherReq.classList.add("d-none");
+                } else {
+                    DeceasedWasher.classList.remove("good");
+                    DeceasedWasher.classList.add("error");
+                    DeceasedWasherReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Deceased Transporter
+    const DeceasedCarrier = deceasedForm.querySelector("#the_carrier");
+    const DeceasedCarrierReq = deceasedForm.querySelector("#carrierReq");
+    if (DeceasedCarrier) {
+        DeceasedCarrier.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]+$/;
+            if (this.value.trim() === "") {
+                DeceasedCarrier.classList.remove("good");
+                DeceasedCarrier.classList.add("error");
+                DeceasedCarrierReq.classList.remove("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    DeceasedCarrier.classList.add("good");
+                    DeceasedCarrier.classList.remove("error");
+                    DeceasedCarrierReq.classList.add("d-none");
+                } else {
+                    DeceasedCarrier.classList.remove("good");
+                    DeceasedCarrier.classList.add("error");
+                    DeceasedCarrierReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Deceased Region Name
+    const DeceasedRegion = deceasedForm.querySelector("#region");
+    const RegionReq = deceasedForm.querySelector("#regionReq");
+    if (DeceasedRegion) {
+        DeceasedRegion.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "المنطقة") {
+                DeceasedRegion.classList.add("error");
+                DeceasedRegion.classList.remove("good");
+                RegionReq.classList.remove("d-none");
+            } else {
+                DeceasedRegion.classList.remove("error");
+                DeceasedRegion.classList.add("good");
+                RegionReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Tomb Name
+    const DeceasedTomb = deceasedForm.querySelector("#regionTomb");
+    const TombReq = deceasedForm.querySelector("#tombReq");
+    if (DeceasedTomb) {
+        DeceasedTomb.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "المنطقة") {
+                DeceasedTomb.classList.add("error");
+                DeceasedTomb.classList.remove("good");
+                TombReq.classList.remove("d-none");
+            } else {
+                DeceasedTomb.classList.remove("error");
+                DeceasedTomb.classList.add("good");
+                TombReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Room Name
+    const DeceasedRoom = deceasedForm.querySelector("#room");
+    const RoomReq = deceasedForm.querySelector("#roomReq");
+    if (DeceasedRoom) {
+        DeceasedRoom.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "المنطقة") {
+                DeceasedRoom.classList.add("error");
+                DeceasedRoom.classList.remove("good");
+                RoomReq.classList.remove("d-none");
+            } else {
+                DeceasedRoom.classList.remove("error");
+                DeceasedRoom.classList.add("good");
+                RoomReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Deceased Notes
+    const DeceasedNotes = deceasedForm.querySelector("#notes");
+    const DeceasedNotesReq = deceasedForm.querySelector("#notesReq");
+    if (DeceasedNotes) {
+        DeceasedNotes.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]+$/;
+            if (this.value.trim() === "") {
+                DeceasedNotes.classList.remove("good");
+                DeceasedNotes.classList.add("error");
+                DeceasedNotesReq.classList.remove("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    DeceasedNotes.classList.add("good");
+                    DeceasedNotes.classList.remove("error");
+                    DeceasedNotesReq.classList.add("d-none");
+                } else {
+                    DeceasedNotes.classList.remove("good");
+                    DeceasedNotes.classList.add("error");
+                    DeceasedNotesReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Deceased Submition
+    const DeceasedSubmition = deceasedForm.querySelector("#deceasedSubmit");
+    if (DeceasedSubmition) {
+        DeceasedSubmition.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (validateForm(deceasedForm)) {
+                deceasedForm.submit();
+            }
+        });
+    }
+}
+//! Village Deceaseds Validation
+const VillageForm = document.getElementById("villageForm");
+if (VillageForm) {
+    //! Village Deceased Name
+    const VillageDeceasedName = VillageForm.querySelector("#villageDeceasedName");
+    if (VillageDeceasedName) {
+        const VillageDeceasedNameReq = VillageForm.querySelector(
+            "#villageDeceasedNameReq"
+        );
+        const VillageDeceasedNameMsg = VillageForm.querySelector(
+            "#villageDeceasedNameMsg"
+        );
+        VillageDeceasedName.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s\d\/\-\.\,]{3,}$/;
+            if (VillageDeceasedName.value.trim() === "") {
+                VillageDeceasedNameReq.classList.remove("d-none");
+                VillageDeceasedNameMsg.classList.add("d-none");
+                VillageDeceasedName.classList.remove("good");
+                VillageDeceasedName.classList.add("error");
+            } else {
+                if (letters.test(VillageDeceasedName.value)) {
+                    VillageDeceasedName.classList.add("good");
+                    VillageDeceasedName.classList.remove("error");
+                    VillageDeceasedNameMsg.classList.add("d-none");
+                    VillageDeceasedNameReq.classList.add("d-none");
+                } else {
+                    VillageDeceasedName.classList.remove("good");
+                    VillageDeceasedName.classList.add("error");
+                    VillageDeceasedNameMsg.classList.remove("d-none");
+                    VillageDeceasedNameReq.classList.add("d-none");
+                }
             }
         })
-        //! Validation For Submit Button
-        const PaymentSubmit = payment.querySelectorAll("[data-PaymentSubmit-id]");
-        if (PaymentSubmit) {
-            PaymentSubmit.forEach((pay) => {
-                pay.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    if (validateForm(payment)) {
-                        payment.submit();
-                    }
-                });
-            });
-        }
-    });
-}
-//! Safe Validation
-const safeDataForm = document.getElementById("safeForm");
-if (safeDataForm) {
-    //! Validation For Safe Amount
-    const withdrawnAmount = document.getElementById("withdrawn_amount");
-    const withdrawReq = document.getElementById("withdrawReq");
-    const withdrawMsg = document.getElementById("withdrawMsg");
-    withdrawnAmount.addEventListener("input", function () {
-        const withdrawReg = /(?=.{2,})/;
-        if (this.value.trim() === "") {
-            withdrawReq.classList.remove("d-none");
-            withdrawMsg.classList.add("d-none");
-            withdrawnAmount.classList.remove("good");
-            withdrawnAmount.classList.add("error");
-        } else {
-            if (withdrawReg.test(this.value)) {
-                withdrawnAmount.classList.add("good");
-                withdrawnAmount.classList.remove("error");
-                withdrawReq.classList.add("d-none");
-                withdrawMsg.classList.add("d-none");
+    }
+    //! Village Deceased Gender
+    const VillageDeceasedGender = VillageForm.querySelector("#villageDeceasedGender");
+    if (VillageDeceasedGender) {
+        VillageDeceasedGender.addEventListener("change", function () {
+            const VillageDeceasedGenderReq =
+                VillageForm.querySelector("#villageGenReq");
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "جنس المتوفي") {
+                VillageDeceasedGender.classList.add("error");
+                VillageDeceasedGender.classList.remove("good");
+                VillageDeceasedGenderReq.classList.remove("d-none");
             } else {
-                withdrawnAmount.classList.remove("good");
-                withdrawnAmount.classList.add("error");
-                withdrawReq.classList.add("d-none");
-                withdrawMsg.classList.remove("d-none");
-            }
-        }
-    });
-    //! Validation For Safe Image
-    const proofImg = document.getElementById("proof_withdraw");
-    const ProofimgReq = document.getElementById("withdrawimgReq");
-    const ProofimgSize = document.getElementById("withdrawimgSize");
-    const ProofimgExt = document.getElementById("withdrawimgExt");
-    proofImg.addEventListener("change", function () {
-        const img = proofImg.files[0];
-        if (img) {
-            validateImage(img,ProofimgReq,ProofimgExt,proofImg,ProofimgSize);
-        } else {
-            proofImg.classList.add("error");
-            proofImg.classList.remove("good");
-            ProofimgReq.classList.remove("d-none");
-            ProofimgSize.classList.add("d-none");
-            ProofimgExt.classList.add("d-none");
-        }
-    })
-    //! Validation For Safe Submit Button
-    const withdrawFormSubmit = document.getElementById("withdrawSubmit");
-    if (withdrawFormSubmit) {
-        withdrawFormSubmit.addEventListener("click", function (event) {
-            event.preventDefault();
-            if (validateForm(safeDataForm)) {
-                safeDataForm.submit();
+                VillageDeceasedGender.classList.remove("error");
+                VillageDeceasedGender.classList.add("good");
+                VillageDeceasedGenderReq.classList.add("d-none");
             }
         });
     }
-}
-//! Bank Validation
-const BankForm = document.getElementById("BankForm");
-if (BankForm) {
-    //! Validation For Bank Amount
-    const bankAmount = document.getElementById("withdrawn_bank");
-    const bankReq = document.getElementById("bankReq");
-    const bankMsg = document.getElementById("bankMsg");
-    bankAmount.addEventListener("input", function () {
-        const bankReg = /(?=.{2,})/;
-        if (this.value.trim() === "") {
-            bankReq.classList.remove("d-none");
-            bankMsg.classList.add("d-none");
-            bankAmount.classList.remove("good");
-            bankAmount.classList.add("error");
-        } else {
-            if (bankReg.test(this.value)) {
-                bankAmount.classList.add("good");
-                bankAmount.classList.remove("error");
-                bankReq.classList.add("d-none");
-                bankMsg.classList.add("d-none");
-            } else {
-                bankAmount.classList.remove("good");
-                bankAmount.classList.add("error");
-                bankReq.classList.add("d-none");
-                bankMsg.classList.remove("d-none");
-            }
-        }
-    })
-    //! Validation For Bank Image
-    const proofBankImg = document.getElementById("proof_bank");
-    const ProofBankimgReq = document.getElementById("bankImgReq");
-    const ProofBankimgSize = document.getElementById("bankImgSize");
-    const ProofBankimgExt = document.getElementById("bankImgExt");
-    proofBankImg.addEventListener("change", function () {
-        const img = proofBankImg.files[0];
-        if (img) {
-            validateImage(img,ProofBankimgReq,ProofBankimgExt,proofBankImg,ProofBankimgSize);
-        } else {
-            proofBankImg.classList.add("error");
-            proofBankImg.classList.remove("good");
-            ProofBankimgReq.classList.remove("d-none");
-            ProofBankimgSize.classList.add("d-none");
-            ProofBankimgExt.classList.add("d-none");
-        }
-    })
-    //! Validation For Bank Submit Button
-    const BankSubmit = document.getElementById("BankSubmit");
-    if (BankSubmit) {
-        BankSubmit.addEventListener("click", function (event) {
-            event.preventDefault();
-            if (validateForm(BankForm)) {
-                BankForm.submit();
-            }
-        });
-    }
-}
-//! Donation Debt
-const DonationDebtForm = document.getElementById("DonationDebtForm");
-if (DonationDebtForm) {
-    //! Validation For Reason Field
-    const delayReason = document.getElementById("delay_reason");
-    const reasonReq = document.getElementById("reasonReq");
-    delayReason.addEventListener("input", function () {
-        let reasonReg = /^[\u0600-\u06FF\s]+$/;
-        if (this.value.trim() === "") {
-            reasonReq.classList.remove("d-none");
-            delayReason.classList.remove("good");
-            delayReason.classList.add("error");
-        } else {
-            if (reasonReg.test(this.value)) {
-                delayReason.classList.add("good");
-                delayReason.classList.remove("error");
-                reasonReq.classList.add("d-none");
-            } else {
-                delayReason.classList.remove("good");
-                delayReason.classList.add("error");
-                reasonReq.classList.add("d-none");
-            }
-        }
-    });
-    //! Validation For Donation Debt Amount
-    const DelayAmount = document.getElementById("delay_amount");
-    const DelayAmountReq = document.getElementById("DelayAmountReq");
-    const DelayAmountMsg = document.getElementById("DelayAmountMsg");
-    DelayAmount.addEventListener("input", function () {
-        let DelayAmountReg = /(?=.{2,})/;
-        if (this.value.trim() === "") {
-            DelayAmountReq.classList.remove("d-none");
-            DelayAmountMsg.classList.add("d-none");
-            DelayAmount.classList.remove("good");
-            DelayAmount.classList.add("error");
-        } else {
-            if (DelayAmountReg.test(this.value)) {
-                DelayAmount.classList.add("good");
-                DelayAmount.classList.remove("error");
-                DelayAmountReq.classList.add("d-none");
-                DelayAmountMsg.classList.add("d-none");
-            } else {
-                DelayAmount.classList.remove("good");
-                DelayAmount.classList.add("error");
-                DelayAmountReq.classList.add("d-none");
-                DelayAmountMsg.classList.remove("d-none");
-            }
-        }
-    });
-    //! Validation For Donation Debt Submit
-    const DonationDebtSubmit = document.getElementById("DonationDebtSubmit");
-    if (DonationDebtSubmit) {
-        DonationDebtSubmit.addEventListener("click", function (event) {
-            event.preventDefault();
-            if (validateForm(DonationDebtForm)) {
-                DonationDebtForm.submit();
-            }
-        });
-    }
-}
-//! Validation For Paying Donation Debt
-const PayDonationDebtForm = document.querySelectorAll("[data-paydonation-id]");
-if (PayDonationDebtForm) {
-    const donationAmount = document.querySelectorAll("[data-donationamount-id]");
-    const donationInvoice = document.querySelectorAll("[data-donationinv-id]");
-    PayDonationDebtForm.forEach((paydon) => {
-        //! Donation Invoice
-        donationInvoice.forEach((inv) => {
-            let invInput = paydon.querySelector(`input[name="invoice_no"][data-donationinv-id="${inv.dataset.donationinvId}"]`);
-            let donationInvReq = paydon.querySelector(`p.donationInvReq[data-donationinv-id="${inv.dataset.donationinvId}"]`);
-            let donationInvMsg = paydon.querySelector(`p.donationInvMsg[data-donationinv-id="${inv.dataset.donationinvId}"]`);
-            if (invInput) {
-                inv.addEventListener("input", function () {
-                    let invoiceReg = /^\d{5}$/;
-                    if (this.value.trim() === "") {
-                        donationInvReq.classList.remove("d-none");
-                        donationInvMsg.classList.add("d-none");
-                        inv.classList.remove("good");
-                        inv.classList.add("error");
-                    } else {
-                        if (invoiceReg.test(this.value)) {
-                            inv.classList.add("good");
-                            inv.classList.remove("error");
-                            donationInvReq.classList.add("d-none");
-                            donationInvMsg.classList.add("d-none");
-                        } else {
-                            inv.classList.remove("good");
-                            inv.classList.add("error");
-                            donationInvReq.classList.add("d-none");
-                            donationInvMsg.classList.remove("d-none");
-                        }
-                    }
-                });
-            }
-        });
-        //! Donation Amount
-        donationAmount.forEach((amount) => {
-            let amountInput = paydon.querySelector(`input[name="amount"][data-donationamount-id="${amount.dataset.donationamountId}"]`);
-            let donationAmountReq = paydon.querySelector(`p.donationAmountReq[data-donationamount-id="${amount.dataset.donationamountId}"]`);
-            let donationAmountMsg = paydon.querySelector(`p.donationAmountMsg[data-donationamount-id="${amount.dataset.donationamountId}"]`);
-            if (amountInput) {
-                amount.addEventListener("input", function () {
-                    let amountReg = /(?=.{2,5})/;
-                    if (this.value.trim() === "") {
-                        donationAmountReq.classList.remove("d-none");
-                        donationAmountMsg.classList.add("d-none");
-                        amount.classList.remove("good");
-                        amount.classList.add("error");
-                    } else {
-                        if (amountReg.test(this.value)) {
-                            amount.classList.add("good");
-                            amount.classList.remove("error");
-                            donationAmountReq.classList.add("d-none");
-                            donationAmountMsg.classList.add("d-none");
-                        } else {
-                            amount.classList.remove("good");
-                            amount.classList.add("error");
-                            donationAmountReq.classList.add("d-none");
-                            donationAmountMsg.classList.remove("d-none");
-                        }
-                    }
-                });
-            }
-        });
-        //! Validation For Donation Debt Payment Submit Form
-        const DonationDebtSubmit = paydon.querySelectorAll("[data-donationSubmitForm-id]");
-        if(DonationDebtSubmit){
-            DonationDebtSubmit.forEach((debt)=>{
-                debt.addEventListener("click",function(event){
-                    event.preventDefault();
-                    if (validateForm(paydon)) {
-                        paydon.submit();
-                    }
-                })
-            })
-        }
-    })
-}
-//! Validation For Paying Old Donation
-const PayOldDonationDebt = document.querySelectorAll("[data-payolddonation-id]");
-if (PayOldDonationDebt) {
-    const oldDonationInvoice = document.querySelectorAll("[data-oldinv-id]");
-    const oldDonationAmount = document.querySelectorAll("[data-oldamount-id]");
-    PayOldDonationDebt.forEach((olddon) => {
-        //! Old Donation Invoice
-        oldDonationInvoice.forEach((inv) => {
-            let invInput = olddon.querySelector(`input[name="invoice_no"][data-oldinv-id="${inv.dataset.oldinvId}"]`);
-            let oldDonationInvReq = olddon.querySelector(`p.oldDonationInvReq[data-oldinv-id="${inv.dataset.oldinvId}"]`);
-            let oldDonationInvMsg = olddon.querySelector(`p.oldDonationInvMsg[data-oldinv-id="${inv.dataset.oldinvId}"]`);
-            if (invInput) {
-                inv.addEventListener("input", function () {
-                    let invoiceReg = /^\d{5}$/;
-                    if (this.value.trim() === "") {
-                        oldDonationInvReq.classList.remove("d-none");
-                        oldDonationInvMsg.classList.add("d-none");
-                        inv.classList.remove("good");
-                        inv.classList.add("error");
-                    } else {
-                        if (invoiceReg.test(this.value)) {
-                            inv.classList.add("good");
-                            inv.classList.remove("error");
-                            oldDonationInvReq.classList.add("d-none");
-                            oldDonationInvMsg.classList.add("d-none");
-                        } else {
-                            inv.classList.remove("good");
-                            inv.classList.add("error");
-                            oldDonationInvReq.classList.add("d-none");
-                            oldDonationInvMsg.classList.remove("d-none");
-                        }
-                    }
-                })
-            }
-        });
-        //! Old Donation Amount
-        oldDonationAmount.forEach((oldamount) => {
-            let oldAmountInput = olddon.querySelector(`input[name="amount"][data-oldamount-id="${oldamount.dataset.oldamountId}"]`);
-            let oldDonationAmountReq = olddon.querySelector(`p.oldDonationAmountReq[data-oldamount-id="${oldamount.dataset.oldamountId}"]`);
-            let oldDonationAmountMsg = olddon.querySelector(`p.oldDonationAmountMsg[data-oldamount-id="${oldamount.dataset.oldamountId}"]`);
-            if (oldAmountInput) {
-                oldamount.addEventListener("input", function () {
-                    let amountReg = /(?=.{2,5})/;
-                    if (this.value.trim() === "") {
-                        oldDonationAmountReq.classList.remove("d-none");
-                        oldDonationAmountMsg.classList.add("d-none");
-                        oldamount.classList.remove("good");
-                        oldamount.classList.add("error");
-                    } else {
-                        if (amountReg.test(this.value)) {
-                            oldamount.classList.add("good");
-                            oldamount.classList.remove("error");
-                            oldDonationAmountReq.classList.add("d-none");
-                            oldDonationAmountMsg.classList.add("d-none");
-                        } else {
-                            oldamount.classList.remove("good");
-                            oldamount.classList.add("error");
-                            oldDonationAmountReq.classList.add("d-none");
-                            oldDonationAmountMsg.classList.remove("d-none");
-                        }
-                    }
-                });
-            }
-        });
-        //! Old Donation Submit Button
-        const OldDonationSubmit = olddon.querySelectorAll("[data-oldDonationSubmit-id]");
-        if (OldDonationSubmit) {
-            OldDonationSubmit.forEach((oldsubmit) => {
-                oldsubmit.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    if (validateForm(olddon)) {
-                        olddon.submit();
-                    }
-                })
-            })
-        }
-    })
-}
-//! craftSelect
-let SelectedOption = document.getElementById("craftSelect");
-if (SelectedOption) {
-    SelectedOption.addEventListener("change", function () {
-        let selectedOption = this.options[this.selectedIndex].value;
-        let otherCraftInput = document.getElementsByName("other_craft")[0];
-        otherCraftInput.value = "";
-        otherCraftInput.disabled = selectedOption !== "أخرى";
-    });
-}
-//! category News Select
-const categorySelect = document.getElementById("categorySelect");
-const inputsDiv = document.getElementById("inputs");
-const img = document.getElementById("img");
-const thumbs = document.getElementById("thumbs");
-if (categorySelect) {
-    categorySelect.addEventListener("change", function () {
-        if (this.value === "عزاء") {
-            inputsDiv.classList.add("hidden");
-            img.classList.add("hidden");
-            thumbs.classList.add("hidden");
-            inputsDiv.querySelectorAll("input").forEach(function (input) {
-                input.disabled = true;
-            });
-        } else {
-            inputsDiv.classList.remove("hidden");
-            img.classList.remove("hidden");
-            thumbs.classList.remove("hidden");
-            inputsDiv.querySelectorAll("input").forEach(function (input) {
-                input.disabled = false;
-            });
-        }
-    });
-}
-//! updateCraft Worker Page
-let selectElements = document.querySelectorAll("[data-worker-id]");
-if (selectElements) {
-    selectElements.forEach((selectElement) => {
-        let otherCraftInput = document.querySelector(`input[name="other_craft"][data-worker-id="${selectElement.dataset.workerId}"]`);
-        function handleUpdateCraft() {
-            let selectedOption = selectElement.options[selectElement.selectedIndex].value;
-            if (selectedOption === "أخرى") {
-                otherCraftInput.disabled = false;
-            } else {
-                otherCraftInput.value = "";
-                otherCraftInput.disabled = true;
-                otherCraftInput.removeAttribute("value");
-            }
-        }
-        selectElement.addEventListener("change", function () {
-            handleUpdateCraft();
-        });
-    });
-}
-//! Insert Donation
-let allDonations = document.querySelectorAll("[data-donation-id]");
-if (allDonations) {
-    allDonations.forEach((donation) => {
-        let otherDonation = document.querySelector(`input[name="other_donation"][data-donation-id="${donation.dataset.donationId}"]`);
-        let categoryType = document.querySelector(`select[name="donation_category"][data-donation-id="${donation.dataset.donationId}"]`);
-        let Amount = document.querySelector(`input[name="amount"][data-donation-id="${donation.dataset.donationId}"]`);
-        function donationUpdate() {
-            let donationValue = donation.options[donation.selectedIndex].value;
-            if (donationValue == "أخرى") {
-                Amount.classList.remove("d-none");
-                Amount.disabled = false;
-                categoryType.classList.add("d-none");
-                categoryType.disabled = true;
-                otherDonation.classList.remove("d-none");
-                otherDonation.disabled = false;
-            } else if (donationValue == "مادي") {
-                Amount.classList.remove("d-none");
-                Amount.disabled = false;
-                categoryType.classList.remove("d-none");
-                categoryType.disabled = false;
-                otherDonation.classList.add("d-none");
-                otherDonation.disabled = true;
-            }
-        }
-        donation.addEventListener("change", function () {
-            donationUpdate();
-        });
-    });
-}
-//! Outer Donators Period
-let donationSelect = document.getElementById("donator_type");
-if (donationSelect) {
-    donationSelect.addEventListener("change", function () {
-        let donationValue = this.options[this.selectedIndex].value;
-        let donationName = document.getElementById("duration");
-        if (donationValue == "منتظم") {
-            donationName.classList.remove("d-none");
-        } else {
-            donationName.value = "";
-            donationName.classList.add("d-none");
-        }
-    });
-}
-//! miscellaneous Insertion
-let category = document.getElementById("category");
-if (category) {
-    category.addEventListener("change", function () {
-        let selectedOption = this.options[this.selectedIndex].value;
-        let otherCategory = document.getElementById("other_category");
-        if (selectedOption === "أخرى") {
-            otherCategory.classList.remove("d-none");
-        } else {
-            otherCategory.value = "";
-            otherCategory.classList.add("d-none");
-        }
-    });
-}
-//! Update miscellaneous
-let selectMiscs = document.querySelectorAll("[data-misc-id]");
-if (selectMiscs) {
-    selectMiscs.forEach((misc) => {
-        let otherCategory = document.querySelector(
-            `input[name="other_category"][data-misc-id="${misc.dataset.miscId}"]`
+    //! Village Deceased Death Place
+    const VillageDeceasedDeathPlace = VillageForm.querySelector("#villageDeceasedDeathPlace");
+    if (VillageDeceasedDeathPlace) {
+        const VillageDeceasedDeathPlaceReq = VillageForm.querySelector(
+            "#villageDeathPlaceReq"
         );
-        function handleUpdateCraft() {
-            let selectedOption = misc.options[misc.selectedIndex].value;
-            if (selectedOption === "أخرى") {
-                otherCategory.disabled = false;
+        VillageDeceasedDeathPlace.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s\d\/\-\.\,]{3,}$/;
+            if (this.value.trim() === "") {
+                VillageDeceasedDeathPlaceReq.classList.remove("d-none");
+                VillageDeceasedDeathPlace.classList.remove("good");
+                VillageDeceasedDeathPlace.classList.add("error");
             } else {
-                otherCategory.value = "";
-                otherCategory.disabled = true;
-                otherCategory.removeAttribute("value");
+                if (letters.test(this.value)) {
+                    VillageDeceasedDeathPlace.classList.add("good");
+                    VillageDeceasedDeathPlace.classList.remove("error");
+                    VillageDeceasedDeathPlaceReq.classList.add("d-none");
+                } else {
+                    VillageDeceasedDeathPlace.classList.remove("good");
+                    VillageDeceasedDeathPlace.classList.add("error");
+                    VillageDeceasedDeathPlaceReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Village Deceased Death Date
+    const VillageDeceasedDeathDate = VillageForm.querySelector("#villageDeceasedDeathDate");
+    if (VillageDeceasedDeathDate) {
+        const VillageDeceasedDeathDateReq = VillageForm.querySelector("#village_death_date_req");
+        VillageDeceasedDeathDate.addEventListener("change", function () {
+            const deathDateValue = VillageDeceasedDeathDate.value;
+            if (deathDateValue === "") {
+                VillageDeceasedDeathDate.classList.add("error");
+                VillageDeceasedDeathDate.classList.remove("good");
+                VillageDeceasedDeathDateReq.classList.remove("d-none");
+            } else {
+                VillageDeceasedDeathDate.classList.remove("error");
+                VillageDeceasedDeathDate.classList.add("good");
+                VillageDeceasedDeathDateReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Village Deceased Burial Date
+    const VillageDeceasedBurialDate = VillageForm.querySelector("#villageDeceasedBurialDate");
+    if (VillageDeceasedBurialDate) {
+        const VillageDeceasedBurialDateReq = VillageForm.querySelector("#village_burial_date_req");
+        VillageDeceasedBurialDate.addEventListener("change", function () {
+            const burialDateValue = VillageDeceasedBurialDate.value;
+            if (burialDateValue === "") {
+                VillageDeceasedBurialDate.classList.add("error");
+                VillageDeceasedBurialDate.classList.remove("good");
+                VillageDeceasedBurialDateReq.classList.remove("d-none");
+            } else {
+                VillageDeceasedBurialDate.classList.remove("error");
+                VillageDeceasedBurialDate.classList.add("good");
+                VillageDeceasedBurialDateReq.classList.add("d-none");
+            }
+        });
+    }
+    //! Village Deceased Submittion
+    const VillageFormSubmition = VillageForm.querySelector("#villageDeceasedSubmit");
+    if (VillageFormSubmition) {
+        VillageFormSubmition.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (validateForm(VillageForm)) {
+                VillageForm.submit();
+            }
+        })
+    }
+}
+//! New Tomb Donators Validation
+const NewDonatorsForm = document.getElementById("newTombDonatorsForm");
+if (NewDonatorsForm) {
+    //! New Tomb Donators Name Validations
+    const NewDonatorsName = NewDonatorsForm.querySelector("#tombDonatorName");
+    if (NewDonatorsName) {
+        const NewDonatorsNameReq =
+            NewDonatorsForm.querySelector("#tombDonatorReq");
+        const NewDonatorsNameMsg =
+            NewDonatorsForm.querySelector("#tombDonatorMsg");
+        NewDonatorsName.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s\d\/\-\.\,]{3,}$/;
+            if (NewDonatorsName.value.trim() === "") {
+                NewDonatorsNameReq.classList.remove("d-none");
+                NewDonatorsNameMsg.classList.add("d-none");
+                NewDonatorsName.classList.remove("good");
+                NewDonatorsName.classList.add("error");
+            } else {
+                if (letters.test(NewDonatorsName.value)) {
+                    NewDonatorsName.classList.add("good");
+                    NewDonatorsName.classList.remove("error");
+                    NewDonatorsNameMsg.classList.add("d-none");
+                    NewDonatorsNameReq.classList.add("d-none");
+                } else {
+                    NewDonatorsName.classList.remove("good");
+                    NewDonatorsName.classList.add("error");
+                    NewDonatorsNameMsg.classList.remove("d-none");
+                    NewDonatorsNameReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! New Tomb Donators Mobile Number Validation
+    const NewDonatorsMobile =
+        NewDonatorsForm.querySelector("#tombDonatorMobile");
+    if (NewDonatorsMobile) {
+        const NewDonatorsMobileReq = NewDonatorsForm.querySelector(
+            "#tombdonatorMobileReq"
+        );
+        const NewDonatorsMobileMsg = NewDonatorsForm.querySelector(
+            "#tombdonatorMobileMsg"
+        );
+        NewDonatorsMobile.addEventListener("input", function () {
+            let letters = /^[0-9]{12}$/;
+            if (this.value.trim() === "") {
+                NewDonatorsMobileReq.classList.remove("d-none");
+                NewDonatorsMobileMsg.classList.add("d-none");
+                NewDonatorsMobile.classList.remove("good");
+                NewDonatorsMobile.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    NewDonatorsMobile.classList.add("good");
+                    NewDonatorsMobile.classList.remove("error");
+                    NewDonatorsMobileMsg.classList.add("d-none");
+                    NewDonatorsMobileReq.classList.add("d-none");
+                } else {
+                    NewDonatorsMobile.classList.remove("good");
+                    NewDonatorsMobile.classList.add("error");
+                    NewDonatorsMobileMsg.classList.remove("d-none");
+                    NewDonatorsMobileReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! New Tomb DOnators Duration Validation
+    const NewDonatorsDuration =
+        NewDonatorsForm.querySelector("#donationDuration");
+    if (NewDonatorsDuration) {
+        const NewDonatorsDurationReq =
+            NewDonatorsForm.querySelector("#tombDurationReq");
+        NewDonatorsDuration.addEventListener("change", function () {
+            const selectedIndexValue = this.options[this.selectedIndex].value;
+            if (selectedIndexValue === "نوع المتبرع") {
+                NewDonatorsDuration.classList.add("error");
+                NewDonatorsDuration.classList.remove("good");
+                NewDonatorsDurationReq.classList.remove("d-none");
+            } else {
+                NewDonatorsDuration.classList.remove("error");
+                NewDonatorsDuration.classList.add("good");
+                NewDonatorsDurationReq.classList.add("d-none");
+            }
+            if (selectedIndexValue === "أخرى") {
+                NewDonatorsOtherDonation.disabled = false;
+                NewDonatorsOtherDonation.classList.remove("d-none");
+                if (NewDonatorsOtherDonation.value.trim() === "") {
+                    NewDonatorsOtherDonationReq.classList.remove("d-none");
+                    NewDonatorsOtherDonation.classList.remove("good");
+                    NewDonatorsOtherDonation.classList.add("error");
+                }
+            } else {
+                NewDonatorsOtherDonation.disabled = true;
+                NewDonatorsOtherDonation.value = "";
+                NewDonatorsOtherDonation.classList.add("d-none");
+                NewDonatorsOtherDonation.classList.remove("good");
+                NewDonatorsOtherDonation.classList.remove("error");
+                NewDonatorsOtherDonationReq.classList.add("d-none");
+            }
+        });
+    }
+    //! New Tomb Donators Other Duration
+    const NewDonatorsOtherDonation =
+        NewDonatorsForm.querySelector("#tombOtherDuration");
+    const NewDonatorsOtherDonationReq =
+        NewDonatorsForm.querySelector("#tombOtherReq");
+    if (NewDonatorsOtherDonation) {
+        NewDonatorsOtherDonation.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]+$/;
+            if (this.value.trim() === "") {
+                NewDonatorsOtherDonationReq.classList.remove("d-none");
+                NewDonatorsOtherDonation.classList.remove("good");
+                NewDonatorsOtherDonation.classList.add("error");
+            } else {
+                if (letters.test(this.value)) {
+                    NewDonatorsOtherDonation.classList.add("good");
+                    NewDonatorsOtherDonation.classList.remove("error");
+                    NewDonatorsOtherDonationReq.classList.add("d-none");
+                } else {
+                    NewDonatorsOtherDonation.classList.remove("good");
+                    NewDonatorsOtherDonation.classList.add("error");
+                    NewDonatorsOtherDonationReq.classList.add("d-none");
+                }
+            }
+        });
+    }
+    //! Tomb From Submition Validation
+    const TombFormSubmition =
+        NewDonatorsForm.querySelector("#tombFormSubmition");
+    if (TombFormSubmition) {
+        TombFormSubmition.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (validateForm(NewDonatorsForm)) {
+                NewDonatorsForm.submit();
+            }
+        });
+    }
+}
+//! New Tomb Donator Update Validation
+const NewDonatorsFormUpdate = document.querySelectorAll("[data-newdonator-id]");
+if (NewDonatorsFormUpdate.length > 0) {
+    NewDonatorsFormUpdate.forEach((newdonation) => {
+        const UpdateDonatorType = newdonation.querySelectorAll("[data-donatortype-id]");
+        const UpdateOtherDonationType = newdonation.querySelectorAll("[data-donatorduration-id]");
+
+        function handleValidationDonation(updateSelect) {
+            const selectedDonatorType = updateSelect.options[updateSelect.selectedIndex].value;
+            if (selectedDonatorType === "شهري") {
+                UpdateOtherDonationType.forEach((input) => {
+                    input.disabled = true;
+                    input.classList.add("d-none");
+                });
+            } else if (selectedDonatorType === "أخرى") {
+                UpdateOtherDonationType.forEach((input) => {
+                    input.disabled = false;
+                    input.classList.remove("d-none");
+                });
             }
         }
-        misc.addEventListener("change", function () {
-            handleUpdateCraft();
+
+        UpdateDonatorType.forEach((update) => {
+            const updateSelect = newdonation.querySelector(`select[name="donator_type"][data-donatortype-id="${update.dataset.donatortypeId}"]`);
+            if (updateSelect) {
+                handleValidationDonation(updateSelect);
+                updateSelect.addEventListener("change", function () {
+                    handleValidationDonation(updateSelect);
+                });
+            }
         });
     });
 }
-//! Pay Subscription or Old Delays
-let paymentTypes = document.querySelectorAll("[data-payment-id]");
-if (paymentTypes) {
-    paymentTypes.forEach((payment) => {
-        let subscriptionCost = document.querySelector(`input[name="subscription_cost"][data-payment-id="${payment.dataset.paymentId}"]`);
-        let subscriptionPeriod = document.querySelector(`input[name="period"][data-payment-id="${payment.dataset.paymentId}"]`);
-        let delayAmount = document.querySelector(`input[name="delays"][data-payment-id="${payment.dataset.paymentId}"]`);
-        let delayPeriod = document.querySelector(`input[name="delays_period"][data-payment-id="${payment.dataset.paymentId}"]`);
-        function handleDelay() {
-            let selectedPayment = payment.options[payment.selectedIndex].value;
-            if (selectedPayment === "إشتراك") {
-                subscriptionCost.classList.remove("d-none");
-                subscriptionPeriod.classList.remove("d-none");
-                delayAmount.classList.add("d-none");
-                delayPeriod.classList.add("d-none");
-            } else if (selectedPayment === "متأخرات") {
-                subscriptionCost.classList.add("d-none");
-                subscriptionPeriod.classList.add("d-none");
-                delayAmount.classList.remove("d-none");
-                delayPeriod.classList.remove("d-none");
+//! Validation For Tomb Donation History Insertion
+const TombDonationForm = document.getElementById("TombDonationForm");
+if (TombDonationForm) {
+    //! New Tomb Donations Durations
+    const tombDonatorDonationDuration = TombDonationForm.querySelector("#tombDonatorDonationDuration");
+    if (tombDonatorDonationDuration) {
+        const tombDonatorDonationDurationReq = TombDonationForm.querySelector("#tombDonatorDonationDurationReq");
+        tombDonatorDonationDuration.addEventListener("input", function () {
+            let letters = /^[\u0600-\u06FF\s]+$/;
+            if (this.value.trim() === "") {
+                tombDonatorDonationDurationReq.classList.remove("d-none");
+                tombDonatorDonationDuration.classList.remove("good");
+                tombDonatorDonationDuration.classList.add("error");
             } else {
-                subscriptionCost.classList.add("d-none");
-                subscriptionPeriod.classList.add("d-none");
-                delayAmount.classList.add("d-none");
-                delayPeriod.classList.add("d-none");
+                if (letters.test(this.value)) {
+                    tombDonatorDonationDuration.classList.add("good");
+                    tombDonatorDonationDuration.classList.remove("error");
+                    tombDonatorDonationDurationReq.classList.add("d-none");
+                } else {
+                    tombDonatorDonationDuration.classList.remove("good");
+                    tombDonatorDonationDuration.classList.add("error");
+                    tombDonatorDonationDurationReq.classList.add("d-none");
+                }
             }
-        }
-        payment.addEventListener("change", function () {
-            handleDelay();
+        })
+    }
+    //! New Tomb Donations Amount
+    const tombDonatorDonationAmount = TombDonationForm.querySelector("#tombDonatorAmount");
+    if (tombDonatorDonationAmount) {
+        const tombDonatorDonationAmountReq = TombDonationForm.querySelector("#tombDonatorDonationAmountReq");
+        const tombDonatorDonationAmountMsg = TombDonationForm.querySelector("#tombDonatorDonationAmountMsg");
+        tombDonatorDonationAmount.addEventListener("input", function () {
+            let letters = /^[0-9]{5}/;
+            if (this.value.trim() === "") {
+                tombDonatorDonationAmount.classList.remove("good");
+                tombDonatorDonationAmount.classList.add("error");
+                tombDonatorDonationAmountReq.classList.remove("d-none");
+                tombDonatorDonationAmountMsg.classList.add("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    tombDonatorDonationAmount.classList.add("good");
+                    tombDonatorDonationAmount.classList.remove("error");
+                    tombDonatorDonationAmountMsg.classList.add("d-none");
+                    tombDonatorDonationAmountReq.classList.add("d-none");
+                } else {
+                    tombDonatorDonationAmount.classList.remove("good");
+                    tombDonatorDonationAmount.classList.add("error");
+                    tombDonatorDonationAmountMsg.classList.remove("d-none");
+                    tombDonatorDonationAmountReq.classList.add("d-none");
+                }
+            }
+        })
+    }
+    //! New Tomb Donations Invoice Number
+    const tombDonatorDonationInvoice = TombDonationForm.querySelector("#tombDonatorDonationInvoice");
+    if (tombDonatorDonationInvoice) {
+        const tombDonatorDonationInvoiceReq = TombDonationForm.querySelector("#tombDonatorDonationInvoiceReq");
+        const tombDonatorDonationInvoiceMsg = TombDonationForm.querySelector("#tombDonatorDonationInvoiceMsg");
+        tombDonatorDonationInvoice.addEventListener("input", function () {
+            let letters = /^[0-9]{5}/;
+            if (this.value.trim() === "") {
+                tombDonatorDonationInvoice.classList.remove("good");
+                tombDonatorDonationInvoice.classList.add("error");
+                tombDonatorDonationInvoiceReq.classList.remove("d-none");
+                tombDonatorDonationInvoiceMsg.classList.add("d-none");
+            } else {
+                if (letters.test(this.value)) {
+                    tombDonatorDonationInvoice.classList.add("good");
+                    tombDonatorDonationInvoice.classList.remove("error");
+                    tombDonatorDonationInvoiceMsg.classList.add("d-none");
+                    tombDonatorDonationInvoiceReq.classList.add("d-none");
+                } else {
+                    tombDonatorDonationInvoice.classList.remove("good");
+                    tombDonatorDonationInvoice.classList.add("error");
+                    tombDonatorDonationInvoiceMsg.classList.remove("d-none");
+                    tombDonatorDonationInvoiceReq.classList.add("d-none");
+                }
+            }
+        })
+    }
+    //! Tomb Donator Form Submition
+    const TombDonatorFormSubmition = TombDonationForm.querySelector("#TombDonationFormSubmition");
+    if (TombDonatorFormSubmition) {
+        TombDonatorFormSubmition.addEventListener("click", function (event) {
+            event.preventDefault();
+            if (validateForm(TombDonationForm)) {
+                TombDonationForm.submit();
+            }
         });
-    });
+    }
 }
-//!
-//!
-//!
-//!
-//!
-//!
-//!
-//!
-//!
-//!
-
-
-
-
-
-

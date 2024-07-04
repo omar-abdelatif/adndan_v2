@@ -22,9 +22,9 @@ class CasesRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string'],
+            'fullname' => ['required', 'string'],
             'ssn' => ['required', 'unique:cases,ssn'],
-            'phone_no' => ['required',, 'unique:cases,phone_no'],
+            'phone_number' => ['required', 'unique:cases,phone_number'],
             'age' => ['required',],
             'address' => ['required','string'],
             'income_type' => ['required','string'],

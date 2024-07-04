@@ -75,7 +75,6 @@ $(document).ready(function () {
     $(".datepicker-here").datepicker({
         dateFormat: "yyyy-mm-dd",
     });
-    //! Get Cost By Years
 });
 //! Multi Datatables in Same Page
 for (let i = 0; i < 500; i++) {
@@ -103,8 +102,14 @@ for (let i = 0; i < 500; i++) {
     });
 }
 //! Remove Alert After  5 Seconds
-const errors = document.querySelectorAll("#error");
+const errors = document.querySelectorAll(".alert-danger");
 errors.forEach((error) => {
+    setTimeout(function () {
+        error.style.display = "none";
+    }, 5000);
+});
+const success = document.querySelectorAll(".alert-success");
+success.forEach((error) => {
     setTimeout(function () {
         error.style.display = "none";
     }, 5000);

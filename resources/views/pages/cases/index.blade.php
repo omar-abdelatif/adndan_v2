@@ -71,7 +71,7 @@
                             <div class="step-bar-right"></div>
                         </div>
                     </div>
-                    <form action="" method="post" id="storeSubscriber" enctype="multipart/form-data">
+                    <form action="{{route('cases.store')}}" method="post" id="storeSubscriber" enctype="multipart/form-data">
                         @csrf
                         <div id="msform">
                             <article class="stepper-one row g-3 custom-input" style="display: flex;">
@@ -98,7 +98,7 @@
                                             </div>
                                             <div class="form-group mb-3">
                                                 <label for="files" class="text-muted form-label">الصور</label>
-                                                <input type="file" name="files" class="form-control text-center" id="files" accept="image/*">
+                                                <input type="file" name="imgs" class="form-control text-center" id="files" accept="image/*">
                                                 <p class="required d-none fw-bold text-danger mb-0" id="filesReq">هذا الحقل مطلوب</p>
                                                 <p class="required d-none fw-bold text-danger mb-0" id="filesExt">يجب ان يكون امتداد الصورة [ jpg, png, jpeg, webp ]</p>
                                                 <p class="required d-none fw-bold text-danger mb-0" id="filesSize">يجب ان يكون حجم الصورة اقل من 2 ميجا</p>
@@ -109,10 +109,10 @@
                                                 <label for="marital_status" class="text-muted form-label">الحالة الاجتماعية</label>
                                                 <select name="marital_status" class="form-control" id="marital_status">
                                                     <option class="text-center" selected>إختار الحالة الاجتماعية للحالة</option>
-                                                    <option value="single">أعزب</option>
-                                                    <option value="married">متزوج/ة</option>
-                                                    <option value="widow">أرمل/ة</option>
-                                                    <option value="divorced">مطلق/ة</option>
+                                                    <option value="أعزب">أعزب</option>
+                                                    <option value="متزوج/ة">متزوج/ة</option>
+                                                    <option value="أرمل/ة">أرمل/ة</option>
+                                                    <option value="مطلق/ة">مطلق/ة</option>
                                                 </select>
                                             </div>
                                             <div class="form-group mb-2">
@@ -244,6 +244,55 @@
                         </div>
                         <button class="btn btn-success fw-bold text-white mt-3 w-100" type="submit">حفظ البيانات</button>
                     </form>
+                </div>
+            </div>
+        </div>
+    </div>
+@endsection
+@section('content')
+    @if($errors->any())
+        @foreach ($errors->all() as $error)
+            <div class="alert alert-danger mx-auto w-50 mb-5 text-center">
+                <p class="mb-0">{{$error}}</p>
+            </div>
+        @endforeach
+    @endif
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="table-responsive">
+                            <table id="table" class="table table-hovered text-muted align-middle text-center" data-order='[[0,"asc"]]' data-page-length="10">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">إسم الحالة</th>
+                                        <th class="text-center">رقم المحمول</th>
+                                        <th class="text-center">الرقم القومي</th>
+                                        <th class="text-center">السن</th>
+                                        <th class="text-center">الحالة الإجتماعية</th>
+                                        <th class="text-center">العنوان</th>
+                                        <th class="text-center">المحافظة</th>
+                                        <th class="text-center">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    @foreach ($cases as $case)
+                                        <tr>
+                                            <td>{{$case->fullname}}</td>
+                                            <td>{{$case->phone_number}}</td>
+                                            <td>{{$case->ssn}}</td>
+                                            <td>{{$case->age}}</td>
+                                            <td>{{$case->marital_status}}</td>
+                                            <td>{{$case->address}}</td>
+                                            <td>{{$case->gov}}</td>
+                                            <td></td>
+                                        </tr>
+                                    @endforeach
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

@@ -15,8 +15,8 @@ return new class extends Migration
         Schema::create('cases', function (Blueprint $table) {
             $table->integer('id')->autoIncrement();
             $table->string('fullname');
-            $table->integer('ssn')->unique();
-            $table->integer('phone_number')->unique();
+            $table->bigInteger('ssn')->unique();
+            $table->bigInteger('phone_number')->unique();
             $table->integer('age');
             $table->string('address');
             $table->string('income_type');
@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('sons');
             $table->string('daughters');
             $table->string('gov');
-            $table->string('files');
+            $table->string('imgs')->nullable();
             $table->timestamp('created_at')->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamp('updated_at')->default(DB::raw('CURRENT_TIMESTAMP'));
         });

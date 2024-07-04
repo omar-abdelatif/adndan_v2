@@ -10,9 +10,9 @@ class Cases extends Model
     use HasFactory;
     protected $table = 'cases';
     protected $fillable = [
-        'name',
+        'fullname',
         'ssn',
-        'phone_no',
+        'phone_number',
         'age',
         'address',
         'income_type',

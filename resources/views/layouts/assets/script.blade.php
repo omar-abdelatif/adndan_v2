@@ -17,7 +17,7 @@
 @yield('script')
 <script>
     @if(Session::has('message'))
-        var type = "{{ Session::get('alert-type','info') }}"
+        let type = "{{ Session::get('alert-type','info') }}"
         switch(type){
             case 'info':
                 toastr.info(" {{ Session::get('message') }} ");
@@ -32,6 +32,23 @@
                 toastr.error(" {{ Session::get('message') }} ");
                 break;
         }
+        toastr.options = {
+            closeButton: false,
+            debug: false,
+            newestOnTop: true,
+            progressBar: true,
+            positionClass: "toast-top-right",
+            preventDuplicates: true,
+            onclick: null,
+            showDuration: "300",
+            hideDuration: "1000",
+            timeOut: "3000",
+            extendedTimeOut: "0",
+            showEasing: "swing",
+            hideEasing: "linear",
+            showMethod: "fadeIn",
+            hideMethod: "fadeOut",
+        };
     @endif
     @if (Route::currentRouteName() == 'home')
         new WOW().init();
