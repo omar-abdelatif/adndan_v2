@@ -62,6 +62,13 @@
     </div>
 @endsection
 @section('content')
+    @if ($errors->any())
+        @foreach ($errors->all() as $error)
+            @php
+                toastrError($error);
+            @endphp
+        @endforeach
+    @endif
     <div class="container-fluid">
         <div class="row">
             <div class="col-lg-12">
@@ -86,9 +93,8 @@
                                             <td class="text-center">{{ $user->email }}</td>
                                             <td class="text-center">{{ $user->role }}</td>
                                             <td class="text-center">
-                                                {{-- ! Update ! --}}
                                                 <button type="button" class="btn btn-warning px-2 py-1" data-bs-toggle="modal" data-bs-target="#editing_{{$user->id}}">
-                                                    <i class="fa-solid fa-pen"></i>
+                                                    <i class="icofont icofont-pen"></i>
                                                 </button>
                                                 <div class="modal fade" id="editing_{{$user->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                                                     <div class="modal-dialog">
@@ -135,7 +141,6 @@
                                                         </div>
                                                     </div>
                                                 </div>
-                                                {{-- ! Delete ! --}}
                                                 <button type="button" class="btn btn-danger px-2 py-1" data-bs-toggle="modal" data-bs-target="#deleting_{{$user->id}}">
                                                     <i class="icofont icofont-trash"></i>
                                                 </button>

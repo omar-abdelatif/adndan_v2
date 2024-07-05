@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Cases;
 use Illuminate\Http\Request;
-use App\Http\Requests\CasesRequest;
-// use Illuminate\Support\Facades\Validator;
 
 class CasesController extends Controller
 {
@@ -13,9 +11,24 @@ class CasesController extends Controller
         $cases = Cases::all();
         return view('pages.cases.index', compact('cases'));
     }
-    public function store(CasesRequest $casesRequest)
+    public function store(Request $casesRequest)
     {
-        $validation = $casesRequest->validated();
+        $validation = $casesRequest->validate([
+            'fullname' => ['required', 'string'],
+            'ssn' => ['required', 'unique:cases,ssn'],
+            'phone_number' => ['required', 'unique:cases,phone_number'],
+            'age' => ['required',],
+            'address' => ['required', 'string'],
+            'income_type' => ['required', 'string'],
+            'benefit_type' => ['required', 'string'],
+            'marital_status' => ['required', 'string'],
+            'health_status' => ['required', 'string'],
+            'monthly_income' => ['required',],
+            'sons' => ['required',],
+            'daughters' => ['required',],
+            'gov' => ['required', 'string'],
+            'imgs' => ['required', 'image', 'mimes:png,jpg,webp,jpeg', 'max:2048'],
+        ]);
         if ($validation) {
             if ($casesRequest->file('imgs') && $casesRequest->file('imgs')->isValid()) {
                 $upload = $casesRequest->file('imgs');
@@ -40,13 +53,9 @@ class CasesController extends Controller
                 'imgs' => $imageName ?? null,
             ]);
             if ($case) {
-                $notificationSuccess = [
-                    'message' => 'تم الإضافة بنجاح',
-                    'alert-type' => 'success',
-                ];
-                return redirect()->back()->with($notificationSuccess);
+                toastr('تم الحفظ بنجااح');
+                return redirect()->back();
             }
         }
-        return redirect()->back();
     }
 }

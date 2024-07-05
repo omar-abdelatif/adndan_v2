@@ -250,11 +250,11 @@
     </div>
 @endsection
 @section('content')
-    @if($errors->any())
+    @if ($errors->any())
         @foreach ($errors->all() as $error)
-            <div class="alert alert-danger mx-auto w-50 mb-5 text-center">
-                <p class="mb-0">{{$error}}</p>
-            </div>
+            @php
+                toastrError($error);
+            @endphp
         @endforeach
     @endif
     <div class="container-fluid">
@@ -263,7 +263,7 @@
                 <div class="card">
                     <div class="card-body">
                         <div class="table-responsive">
-                            <table id="table" class="table table-hovered text-muted align-middle text-center" data-order='[[0,"asc"]]' data-page-length="10">
+                            <table id="table1" class="table table-hovered text-muted align-middle text-center" data-order='[[0,"asc"]]' data-page-length="10">
                                 <thead>
                                     <tr>
                                         <th class="text-center">إسم الحالة</th>

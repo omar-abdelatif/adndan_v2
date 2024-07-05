@@ -59,11 +59,11 @@ class UserController extends Controller
     {
         $validator = $request->validate([
             'name' => 'required',
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users,email',
             'password' => 'required|min:6',
             'role' => 'required'
         ]);
-        try {
+        if ($validator) {
             $user = User::create([
                 'name' => $validator['name'],
                 'email' => $validator['email'],
@@ -71,21 +71,11 @@ class UserController extends Controller
                 'role' => $validator['role']
             ]);
             if ($user) {
-                $notificationSuccess = [
-                    'message' => 'تم إضافة المستخدم بنجاح',
-                    'alert-type' => 'success',
-                ];
-                return redirect()->back()->with($notificationSuccess);
+                toastr('تم الحفظ بنجااح');
+                return redirect()->back();
             }
-            throw new \Exception('Failed to create user.');
-        } catch (\Exception $e) {
-            $errorMessage = $e->getMessage();
-            $notificationError = [
-                'message' => 'خطأ في إضافة المستخدم: ' . $errorMessage,
-                'alert-type' => 'error'
-            ];
-            return redirect()->back()->withErrors([$errorMessage])->with($notificationError);
         }
+        return redirect()->back();
     }
     public function AllUsers()
     {

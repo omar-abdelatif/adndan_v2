@@ -1,5 +1,5 @@
 <!-- latest jquery-->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
 <script src="https://cdn.datatables.net/1.13.2/js/jquery.dataTables.js"></script>
 <script src="https://cdn.datatables.net/1.13.6/js/dataTables.bootstrap5.min.js"></script>
 <!-- feather icon js-->
@@ -12,43 +12,36 @@
 <!-- Plugins JS start-->
 <script id="menu" src="{{asset('assets/js/sidebar-menu.js')}}"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
-<script src="{{ asset('assets/js/datepicker/date-picker/datepicker.js') }}"></script>
-<script src="{{asset('assets/js/datepicker/date-picker/datepicker.ar.js')}}"></script>
 @yield('script')
 <script>
     @if(Session::has('message'))
         let type = "{{ Session::get('alert-type','info') }}"
         switch(type){
             case 'info':
+                toastr.options = {
+                    "progressBar": true
+                }
                 toastr.info(" {{ Session::get('message') }} ");
                 break;
             case 'success':
+                toastr.options = {
+                    "progressBar": true
+                }
                 toastr.success(" {{ Session::get('message') }} ");
                 break;
             case 'warning':
+                toastr.options = {
+                    "progressBar": true
+                }
                 toastr.warning(" {{ Session::get('message') }} ");
                 break;
             case 'error':
+                toastr.options = {
+                    "progressBar": true
+                }
                 toastr.error(" {{ Session::get('message') }} ");
                 break;
         }
-        toastr.options = {
-            closeButton: false,
-            debug: false,
-            newestOnTop: true,
-            progressBar: true,
-            positionClass: "toast-top-right",
-            preventDuplicates: true,
-            onclick: null,
-            showDuration: "300",
-            hideDuration: "1000",
-            timeOut: "3000",
-            extendedTimeOut: "0",
-            showEasing: "swing",
-            hideEasing: "linear",
-            showMethod: "fadeIn",
-            hideMethod: "fadeOut",
-        };
     @endif
     @if (Route::currentRouteName() == 'home')
         new WOW().init();
