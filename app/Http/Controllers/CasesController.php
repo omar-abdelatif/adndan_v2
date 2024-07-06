@@ -58,4 +58,21 @@ class CasesController extends Controller
             }
         }
     }
+    public function destroy($id)
+    {
+        $case = Cases::find($id);
+        if ($case) {
+            if ($case->imgs !== null) {
+                $oldPath = public_path('assets/images/cases/' . $case->imgs);
+                if (file_exists($oldPath)) {
+                    unlink($oldPath);
+                }
+            }
+            $delete = $case->delete();
+            if ($delete) {
+                toastr('تم الحذف بنجااح');
+                return redirect()->back();
+            }
+        }
+    }
 }

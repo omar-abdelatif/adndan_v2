@@ -75,7 +75,6 @@ class UserController extends Controller
                 return redirect()->back();
             }
         }
-        return redirect()->back();
     }
     public function AllUsers()
     {

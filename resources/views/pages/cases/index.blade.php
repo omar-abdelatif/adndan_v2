@@ -262,36 +262,68 @@
             <div class="col-lg-12">
                 <div class="card">
                     <div class="card-body">
-                        <div class="table-responsive">
-                            <table id="table1" class="table table-hovered text-muted align-middle text-center" data-order='[[0,"asc"]]' data-page-length="10">
-                                <thead>
+                        <table id="table" class="table table-hovered text-muted align-middle text-center" data-order='[[0,"asc"]]' data-page-length="10">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">إسم الحالة</th>
+                                    <th class="text-center">رقم المحمول</th>
+                                    <th class="text-center">الرقم القومي</th>
+                                    <th class="text-center">العنوان</th>
+                                    <th class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                @foreach ($cases as $case)
                                     <tr>
-                                        <th class="text-center">إسم الحالة</th>
-                                        <th class="text-center">رقم المحمول</th>
-                                        <th class="text-center">الرقم القومي</th>
-                                        <th class="text-center">السن</th>
-                                        <th class="text-center">الحالة الإجتماعية</th>
-                                        <th class="text-center">العنوان</th>
-                                        <th class="text-center">المحافظة</th>
-                                        <th class="text-center">Action</th>
+                                        <td>{{$case->fullname}}</td>
+                                        <td>{{$case->phone_number}}</td>
+                                        <td>{{$case->ssn}}</td>
+                                        <td>{{$case->address}}</td>
+                                        <td>
+                                            <button type="button" class="btn px-2 py-1" data-bs-toggle="modal" data-bs-target="#editing_{{$case->id}}">
+                                                <i class="text-warning" data-feather="edit"></i>
+                                            </button>
+                                            <div class="modal fade" id="editing_{{$case->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5 text-muted" id="exampleModalLabel">إضافة لجنة جديدة</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body"></div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <button type="button" class="btn px-2 py-1" data-bs-toggle="modal" data-bs-target="#deleting_{{$case->id}}">
+                                                <i class="text-danger" data-feather="trash-2"></i>
+                                            </button>
+                                            <div class="modal fade" id="deleting_{{$case->id}}" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                                <div class="modal-dialog">
+                                                    <div class="modal-content">
+                                                        <div class="modal-header">
+                                                            <h1 class="modal-title fs-5 text-muted" id="exampleModalLabel">جار حذف اللجنة {{$case->name}}</h1>
+                                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                        </div>
+                                                        <div class="modal-body">
+                                                            <form action={{route('cases.delete', $case->id)}} method="get">
+                                                                @csrf
+                                                                <div class="form-title text-center">
+                                                                    <h3 class="text-muted my-2">هل أنت متأكد من الحذف</h3>
+                                                                </div>
+                                                                <div class="modal-footer">
+                                                                    <button type="button" class="btn btn-danger" data-bs-dismiss="modal">إالغاء</button>
+                                                                    <button type="submit" role="button" class="btn btn-primary">تأكيد</button>
+                                                                </div>
+                                                            </form>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </td>
                                     </tr>
-                                </thead>
-                                <tbody>
-                                    @foreach ($cases as $case)
-                                        <tr>
-                                            <td>{{$case->fullname}}</td>
-                                            <td>{{$case->phone_number}}</td>
-                                            <td>{{$case->ssn}}</td>
-                                            <td>{{$case->age}}</td>
-                                            <td>{{$case->marital_status}}</td>
-                                            <td>{{$case->address}}</td>
-                                            <td>{{$case->gov}}</td>
-                                            <td></td>
-                                        </tr>
-                                    @endforeach
-                                </tbody>
-                            </table>
-                        </div>
+                                @endforeach
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </div>
